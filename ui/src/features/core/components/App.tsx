@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AppProviders } from '@common/providers';
 import { MainLayout } from '@core/layout';
 import { LoginForm, RegisterForm, PasswordResetForm } from '@auth/components';
-import { UserManagement, RoleManagement, PermissionManagement, UserProfile } from '@features/users';
+import { UserManagement, RoleManagement, PermissionMatrix, UserProfile } from '@features/users';
 import { Dashboard } from '@features/dashboard';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
+import './App.css';
+
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRoles?: string[] }> = ({
@@ -161,7 +163,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute requiredRoles={['admin', 'super-admin']}>
             <MainLayout>
-              <PermissionManagement />
+              <PermissionMatrix />
             </MainLayout>
           </ProtectedRoute>
         }

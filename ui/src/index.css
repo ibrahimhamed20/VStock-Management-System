@@ -7,7 +7,7 @@
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900 m-0 p-0;
   }
@@ -18,15 +18,15 @@
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 px-4 rounded-md transition-colors duration-200;
   }
-  
+
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
-  
+
   .input-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
@@ -50,7 +50,7 @@
 }
 
 .ant-layout-header {
-  @apply bg-white border-b border-gray-200;
+  @apply bg-white border-b border-gray-200 leading-none;
 }
 
 .mb-0 {
@@ -58,54 +58,247 @@
 }
 
 @layer utilities {
+
   /* Margin mixin utility classes - force usage of these for margin spacing */
-  .m-0   { margin: 0 !important; }
-  .m-1   { margin: 0.25rem !important; }
-  .m-2   { margin: 0.5rem !important; }
-  .m-3   { margin: 0.75rem !important; }
-  .m-4   { margin: 1rem !important; }
-  .m-5   { margin: 1.25rem !important; }
-  .m-6   { margin: 1.5rem !important; }
-  .mx-0  { margin-left: 0 !important; margin-right: 0 !important; }
-  .mx-1  { margin-left: 0.25rem !important; margin-right: 0.25rem !important; }
-  .mx-2  { margin-left: 0.5rem !important; margin-right: 0.5rem !important; }
-  .mx-3  { margin-left: 0.75rem !important; margin-right: 0.75rem !important; }
-  .mx-4  { margin-left: 1rem !important; margin-right: 1rem !important; }
-  .mx-5  { margin-left: 1.25rem !important; margin-right: 1.25rem !important; }
-  .mx-6  { margin-left: 1.5rem !important; margin-right: 1.5rem !important; }
-  .my-0  { margin-top: 0 !important; margin-bottom: 0 !important; }
-  .my-1  { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
-  .my-2  { margin-top: 0.5rem !important; margin-bottom: 0.5rem !important; }
-  .my-3  { margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
-  .my-4  { margin-top: 1rem !important; margin-bottom: 1rem !important; }
-  .my-5  { margin-top: 1.25rem !important; margin-bottom: 1.25rem !important; }
-  .my-6  { margin-top: 1.5rem !important; margin-bottom: 1.5rem !important; }
-  .mt-0  { margin-top: 0 !important; }
-  .mt-1  { margin-top: 0.25rem !important; }
-  .mt-2  { margin-top: 0.5rem !important; }
-  .mt-3  { margin-top: 0.75rem !important; }
-  .mt-4  { margin-top: 1rem !important; }
-  .mt-5  { margin-top: 1.25rem !important; }
-  .mt-6  { margin-top: 1.5rem !important; }
-  .mb-0  { margin-bottom: 0 !important; }
-  .mb-1  { margin-bottom: 0.25rem !important; }
-  .mb-2  { margin-bottom: 0.5rem !important; }
-  .mb-3  { margin-bottom: 0.75rem !important; }
-  .mb-4  { margin-bottom: 1rem !important; }
-  .mb-5  { margin-bottom: 1.25rem !important; }
-  .mb-6  { margin-bottom: 1.5rem !important; }
-  .ml-0  { margin-left: 0 !important; }
-  .ml-1  { margin-left: 0.25rem !important; }
-  .ml-2  { margin-left: 0.5rem !important; }
-  .ml-3  { margin-left: 0.75rem !important; }
-  .ml-4  { margin-left: 1rem !important; }
-  .ml-5  { margin-left: 1.25rem !important; }
-  .ml-6  { margin-left: 1.5rem !important; }
-  .mr-0  { margin-right: 0 !important; }
-  .mr-1  { margin-right: 0.25rem !important; }
-  .mr-2  { margin-right: 0.5rem !important; }
-  .mr-3  { margin-right: 0.75rem !important; }
-  .mr-4  { margin-right: 1rem !important; }
-  .mr-5  { margin-right: 1.25rem !important; }
-  .mr-6  { margin-right: 1.5rem !important; }
+  .m-0 {
+    margin: 0 !important;
+  }
+
+  .m-1 {
+    margin: 0.25rem !important;
+  }
+
+  .m-2 {
+    margin: 0.5rem !important;
+  }
+
+  .m-3 {
+    margin: 0.75rem !important;
+  }
+
+  .m-4 {
+    margin: 1rem !important;
+  }
+
+  .m-5 {
+    margin: 1.25rem !important;
+  }
+
+  .m-6 {
+    margin: 1.5rem !important;
+  }
+
+  .mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .mx-1 {
+    margin-left: 0.25rem !important;
+    margin-right: 0.25rem !important;
+  }
+
+  .mx-2 {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+  }
+
+  .mx-3 {
+    margin-left: 0.75rem !important;
+    margin-right: 0.75rem !important;
+  }
+
+  .mx-4 {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+  }
+
+  .mx-5 {
+    margin-left: 1.25rem !important;
+    margin-right: 1.25rem !important;
+  }
+
+  .mx-6 {
+    margin-left: 1.5rem !important;
+    margin-right: 1.5rem !important;
+  }
+
+  .my-0 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .my-1 {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .my-2 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .my-3 {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .my-4 {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .my-5 {
+    margin-top: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .my-6 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .mt-0 {
+    margin-top: 0 !important;
+  }
+
+  .mt-1 {
+    margin-top: 0.25rem !important;
+  }
+
+  .mt-2 {
+    margin-top: 0.5rem !important;
+  }
+
+  .mt-3 {
+    margin-top: 0.75rem !important;
+  }
+
+  .mt-4 {
+    margin-top: 1rem !important;
+  }
+
+  .mt-5 {
+    margin-top: 1.25rem !important;
+  }
+
+  .mt-6 {
+    margin-top: 1.5rem !important;
+  }
+
+  .mb-0 {
+    margin-bottom: 0 !important;
+  }
+
+  .mb-1 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem !important;
+  }
+
+  .mb-5 {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .mb-6 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .ml-0 {
+    margin-left: 0 !important;
+  }
+
+  .ml-1 {
+    margin-left: 0.25rem !important;
+  }
+
+  .ml-2 {
+    margin-left: 0.5rem !important;
+  }
+
+  .ml-3 {
+    margin-left: 0.75rem !important;
+  }
+
+  .ml-4 {
+    margin-left: 1rem !important;
+  }
+
+  .ml-5 {
+    margin-left: 1.25rem !important;
+  }
+
+  .ml-6 {
+    margin-left: 1.5rem !important;
+  }
+
+  .mr-0 {
+    margin-right: 0 !important;
+  }
+
+  .mr-1 {
+    margin-right: 0.25rem !important;
+  }
+
+  .mr-2 {
+    margin-right: 0.5rem !important;
+  }
+
+  .mr-3 {
+    margin-right: 0.75rem !important;
+  }
+
+  .mr-4 {
+    margin-right: 1rem !important;
+  }
+
+  .mr-5 {
+    margin-right: 1.25rem !important;
+  }
+
+  .mr-6 {
+    margin-right: 1.5rem !important;
+  }
+}
+
+
+
+.permission-matrix-table .ant-table-thead>tr>th {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px 8px;
+  white-space: nowrap;
+}
+
+.permission-matrix-table .ant-table-tbody>tr>td {
+  padding: 12px 8px;
+  text-align: center;
+  border-right: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.permission-matrix-table .ant-table-tbody>tr:hover>td {
+  background: #f0f9ff;
+}
+
+.permission-matrix-table .ant-table-tbody>tr>td:first-child {
+  text-align: left;
+  background: #fafbfc;
+  font-weight: 500;
+}
+
+.permission-matrix-table .ant-table-tbody>tr:hover>td:first-child {
+  background: #f0f9ff;
 }

@@ -32,6 +32,18 @@ export interface Permission {
   updatedAt: Date;
 }
 
+export interface CreateRoleData {
+  name: string;
+  description?: string;
+  permissions: string[];
+}
+
+export interface UpdateRoleData {
+  name?: string;
+  description?: string;
+  permissions?: string[];
+}
+
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
@@ -173,3 +185,13 @@ export interface PaginatedResponse<T> {
   limit: number;
   totalPages: number;
 }
+
+
+export interface PermissionMatrixData {
+  roles: Role[];
+  permissions: Permission[];
+}
+
+
+
+

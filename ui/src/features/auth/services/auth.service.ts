@@ -12,7 +12,8 @@ import type {
   PasswordReset,
   PaginatedResponse,
   AuditLog,
-  UserLoginHistory
+  UserLoginHistory,
+  PermissionMatrixData
 } from '../types/auth.types';
 import { apiService } from '@core/services/api';
 
@@ -149,6 +150,10 @@ export class AuthService {
   }
 
   // Permission Management (Admin only)
+  static async getPermissionMatrix(): Promise<PermissionMatrixData> {
+    return apiService.get<PermissionMatrixData>('/roles/permission-matrix');
+  }
+
   static async getPermissions(): Promise<Permission[]> {
     return apiService.get<Permission[]>('/permissions');
   }

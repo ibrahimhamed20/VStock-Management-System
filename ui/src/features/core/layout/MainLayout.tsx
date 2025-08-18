@@ -168,7 +168,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         width={280}
       >
         <div className="p-4 border-b border-gray-200">
-          <Title level={4} className="text-center mb-0">
+          <Title level={4} className="text-center m-0">
             {collapsed ? 'SA' : 'Store Admin'}
           </Title>
         </div>
@@ -190,7 +190,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               onClick={() => setCollapsed(!collapsed)}
               className="mr-4"
             />
-            <Title level={4} className="mb-0">
+            <Title level={4} className="m-0">
               {menuItems.find(item => item.key === location.pathname)?.label || 'Dashboard'}
             </Title>
           </div>

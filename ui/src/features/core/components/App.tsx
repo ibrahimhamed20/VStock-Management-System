@@ -5,6 +5,14 @@ import { MainLayout } from '@core/layout';
 import { LoginForm, RegisterForm, PasswordResetForm } from '@auth/components';
 import { UserManagement, RoleManagement, PermissionMatrix, UserProfile } from '@features/users';
 import { Dashboard } from '@features/dashboard';
+import { 
+  ProductsPage, 
+  StockPage, 
+  BatchesPage, 
+  MovementsPage, 
+  ReportsPage 
+} from '@features/inventory/pages';
+import { SalesPage, InvoiceManagementPage } from '@features/sales/pages';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
 import './App.css';
@@ -179,25 +187,55 @@ const AppRoutes: React.FC = () => {
         }
       />
 
-      {/* Business Module Routes */}
-      <Route path="/inventory" element={
-        <ProtectedRoute>
-          <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Inventory Management</h1>
-              <p className="text-gray-600">Inventory management functionality coming soon...</p>
-            </div>
-          </MainLayout>
-        </ProtectedRoute>
-      } />
+                  {/* Inventory Management Routes */}
+            <Route path="/inventory" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ProductsPage />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inventory/stock" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <StockPage />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inventory/batches" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <BatchesPage />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inventory/movements" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <MovementsPage />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inventory/reports" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ReportsPage />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
 
       <Route path="/sales" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Sales Management</h1>
-              <p className="text-gray-600">Sales management functionality coming soon...</p>
-            </div>
+            <SalesPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/sales/invoices" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <InvoiceManagementPage />
           </MainLayout>
         </ProtectedRoute>
       } />

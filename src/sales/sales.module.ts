@@ -5,9 +5,10 @@ import { SalesService } from './sales.service';
 import { Invoice } from './entities/invoice.entity';
 import { InvoiceItem } from './entities/invoice-item.entity';
 import { Payment } from './entities/payment.entity';
+import { Client } from '../clients/entities/client.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Invoice, InvoiceItem, Payment])],
+  imports: [TypeOrmModule.forFeature([Invoice, InvoiceItem, Payment, Client])],
   controllers: [SalesController],
   providers: [SalesService],
   exports: [SalesService],

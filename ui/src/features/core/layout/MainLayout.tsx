@@ -4,6 +4,7 @@ import {
   MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, ShoppingOutlined, DollarOutlined,
   ShoppingCartOutlined, BookOutlined, BarChartOutlined, RobotOutlined, UserOutlined,
   SettingOutlined, LogoutOutlined, GlobalOutlined, ProfileOutlined, TeamOutlined,
+  InboxOutlined, HistoryOutlined, FileTextOutlined, BarcodeOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -89,16 +90,60 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       onClick: () => navigate('/dashboard'),
     },
     {
-      key: '/inventory',
+      key: 'inventory',
       icon: <ShoppingOutlined />,
       label: t('navigation.inventory'),
-      onClick: () => navigate('/inventory'),
+      children: [
+        {
+          key: '/inventory',
+          icon: <BarcodeOutlined />,
+          label: 'Products',
+          onClick: () => navigate('/inventory'),
+        },
+        {
+          key: '/inventory/stock',
+          icon: <InboxOutlined />,
+          label: 'Stock Management',
+          onClick: () => navigate('/inventory/stock'),
+        },
+        {
+          key: '/inventory/batches',
+          icon: <FileTextOutlined />,
+          label: 'Batch Management',
+          onClick: () => navigate('/inventory/batches'),
+        },
+        {
+          key: '/inventory/movements',
+          icon: <HistoryOutlined />,
+          label: 'Stock Movements',
+          onClick: () => navigate('/inventory/movements'),
+        },
+        {
+          key: '/inventory/reports',
+          icon: <BarChartOutlined />,
+          label: 'Inventory Reports',
+          onClick: () => navigate('/inventory/reports'),
+        },
+      ],
     },
     {
-      key: '/sales',
+      key: 'sales',
       icon: <DollarOutlined />,
       label: t('navigation.sales'),
-      onClick: () => navigate('/sales'),
+      children: [
+        {
+          key: '/sales',
+          icon: <BarChartOutlined />,
+          label: 'Dashboard',
+          onClick: () => navigate('/sales'),
+        },
+        {
+          key: '/sales/invoices',
+          icon: <FileTextOutlined />,
+          label: 'Invoice Management',
+          onClick: () => navigate('/sales/invoices'),
+        },
+      ],
     },
     {
       key: '/purchasing',
@@ -178,6 +223,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           selectedKeys={[location.pathname]}
           items={menuItems}
           className="border-0"
+          onClick={({ key }) => {
+            if (key.startsWith('/')) {
+              navigate(key);
+            }
+          }}
         />
       </Sider>
 

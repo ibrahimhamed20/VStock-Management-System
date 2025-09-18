@@ -85,7 +85,7 @@ export class Invoice {
   @OneToMany(() => Payment, (payment: Payment) => payment.invoice, { cascade: true })
   payments: Payment[];
 
-  @ManyToOne(() => Client, (client: Client) => client.invoices)
+  @ManyToOne(() => Client, { eager: false })
   @JoinColumn({ name: 'clientId' })
   client: Client;
 }

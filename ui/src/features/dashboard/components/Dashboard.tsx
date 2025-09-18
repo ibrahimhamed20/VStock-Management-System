@@ -1,38 +1,30 @@
 import React from 'react';
-import { Row, Col, Card, Typography, Progress } from 'antd';
+import { Row, Col, Card, Typography, Progress, Alert, Spin } from 'antd';
 import {
   ShoppingOutlined, DollarOutlined, UserOutlined, ShoppingCartOutlined, BarChartOutlined,
-  RiseOutlined, StarOutlined
+  RiseOutlined, StarOutlined, ReloadOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../common/components/PageHeader';
 import { useAuthUser } from '../../auth/stores/auth.store';
+import { useDashboardData } from '../hooks/useDashboard';
+import { SystemStatusCard } from './SystemStatusCard';
+import { LowStockAlert } from './LowStockAlert';
+import { PendingInvoicesCard } from './PendingInvoicesCard';
 
 const { Title, Text } = Typography;
 
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const user = useAuthUser();
-
-  // Mock data - replace with real API calls
-  const stats = {
-    totalSales: 125000,
-    totalProducts: 1250,
-    totalCustomers: 450,
-    totalOrders: 1250,
-  };
-
-  const recentOrders = [
-    { id: 1, customer: 'John Doe', amount: 150, status: 'completed', progress: 100 },
-    { id: 2, customer: 'Jane Smith', amount: 200, status: 'pending', progress: 65 },
-    { id: 3, customer: 'Bob Johnson', amount: 75, status: 'processing', progress: 85 },
-  ];
-
-  const topProducts = [
-    { name: 'Product A', sales: 150, revenue: 15000, rating: 4.8 },
-    { name: 'Product B', sales: 120, revenue: 12000, rating: 4.6 },
-    { name: 'Product C', sales: 100, revenue: 10000, rating: 4.9 },
-  ];
+  const { 
+    stats, 
+    recentOrders, 
+    topProducts, 
+    isLoading, 
+    hasError, 
+    refetch 
+  } = useDashboardData();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -43,6 +35,53 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+        <PageHeader
+          title={t('dashboard.title')}
+          subtitle={t('dashboard.subtitle')}
+          breadcrumbs={[
+            { label: t('navigation.home'), path: '/' },
+            { label: t('navigation.dashboard'), path: '/dashboard' },
+          ]}
+        />
+        <div className="flex items-center justify-center h-64">
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+        <PageHeader
+          title={t('dashboard.title')}
+          subtitle={t('dashboard.subtitle')}
+          breadcrumbs={[
+            { label: t('navigation.home'), path: '/' },
+            { label: t('navigation.dashboard'), path: '/dashboard' },
+          ]}
+        />
+        <Alert
+          message="Error Loading Dashboard"
+          description="There was an error loading the dashboard data. Please try refreshing the page."
+          type="error"
+          showIcon
+          action={
+            <button 
+              onClick={refetch}
+              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+            >
+              Retry
+            </button>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <PageHeader
@@ -52,6 +91,15 @@ export const Dashboard: React.FC = () => {
           { label: t('navigation.home'), path: '/' },
           { label: t('navigation.dashboard'), path: '/dashboard' },
         ]}
+        actions={
+          <button
+            onClick={refetch}
+            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+          >
+            <ReloadOutlined className="mr-2" />
+            Refresh
+          </button>
+        }
       />
 
       {/* Welcome Message */}
@@ -75,8 +123,10 @@ export const Dashboard: React.FC = () => {
             <div className="text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <Text className="text-blue-100 text-sm font-medium">Total Sales</Text>
-                  <div className="text-2xl font-bold mt-1">${stats.totalSales.toLocaleString()}</div>
+                  <Text className="text-blue-100 text-sm font-medium">Total Revenue</Text>
+                  <div className="text-2xl font-bold mt-1">
+                    ${stats?.totalRevenue?.toLocaleString() || '0'}
+                  </div>
                 </div>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <DollarOutlined className="text-2xl" />
@@ -84,7 +134,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div className="mt-3 flex items-center text-blue-100 text-sm">
                 <RiseOutlined className="mr-1" />
-                +12.5% from last month
+                Net Income: ${stats?.netIncome?.toLocaleString() || '0'}
               </div>
             </div>
           </Card>
@@ -96,7 +146,9 @@ export const Dashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Text className="text-green-100 text-sm font-medium">Total Products</Text>
-                  <div className="text-2xl font-bold mt-1">{stats.totalProducts.toLocaleString()}</div>
+                  <div className="text-2xl font-bold mt-1">
+                    {stats?.totalProducts?.toLocaleString() || '0'}
+                  </div>
                 </div>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <ShoppingOutlined className="text-2xl" />
@@ -104,7 +156,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div className="mt-3 flex items-center text-green-100 text-sm">
                 <RiseOutlined className="mr-1" />
-                +8.2% from last month
+                Low Stock: {stats?.lowStockProducts || '0'}
               </div>
             </div>
           </Card>
@@ -116,7 +168,9 @@ export const Dashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Text className="text-purple-100 text-sm font-medium">Total Customers</Text>
-                  <div className="text-2xl font-bold mt-1">{stats.totalCustomers.toLocaleString()}</div>
+                  <div className="text-2xl font-bold mt-1">
+                    {stats?.totalCustomers?.toLocaleString() || '0'}
+                  </div>
                 </div>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <UserOutlined className="text-2xl" />
@@ -124,7 +178,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div className="mt-3 flex items-center text-purple-100 text-sm">
                 <RiseOutlined className="mr-1" />
-                +15.3% from last month
+                Active Orders: {stats?.totalOrders || '0'}
               </div>
             </div>
           </Card>
@@ -135,8 +189,10 @@ export const Dashboard: React.FC = () => {
             <div className="text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <Text className="text-orange-100 text-sm font-medium">Total Orders</Text>
-                  <div className="text-2xl font-bold mt-1">{stats.totalOrders.toLocaleString()}</div>
+                  <Text className="text-orange-100 text-sm font-medium">Pending Invoices</Text>
+                  <div className="text-2xl font-bold mt-1">
+                    {stats?.pendingInvoices || '0'}
+                  </div>
                 </div>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <ShoppingCartOutlined className="text-2xl" />
@@ -144,10 +200,23 @@ export const Dashboard: React.FC = () => {
               </div>
               <div className="mt-3 flex items-center text-orange-100 text-sm">
                 <RiseOutlined className="mr-1" />
-                +22.1% from last month
+                Pending Payments: {stats?.pendingPayments || '0'}
               </div>
             </div>
           </Card>
+        </Col>
+      </Row>
+
+      {/* System Status and Alerts Row */}
+      <Row gutter={[24, 24]} className="mb-8">
+        <Col xs={24} lg={8}>
+          <SystemStatusCard />
+        </Col>
+        <Col xs={24} lg={8}>
+          <LowStockAlert />
+        </Col>
+        <Col xs={24} lg={8}>
+          <PendingInvoicesCard />
         </Col>
       </Row>
 
@@ -164,36 +233,42 @@ export const Dashboard: React.FC = () => {
             } 
             className="shadow-lg border-0 rounded-2xl h-full"
           >
-            <div className="space-y-4">
-              {recentOrders.map((order) => {
-                const statusColors = getStatusColor(order.status);
-                return (
-                  <div key={order.id} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <div className="font-semibold text-gray-800">{order.customer}</div>
-                        <div className="text-sm text-gray-500">Order #{order.id}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-lg text-gray-800">${order.amount}</div>
-                        <div className={`text-xs px-3 py-1 rounded-full ${statusColors.bg} ${statusColors.text} ${statusColors.border} border`}>
-                          {order.status}
+            {recentOrders && recentOrders.length > 0 ? (
+              <div className="space-y-4">
+                {recentOrders.map((order) => {
+                  const statusColors = getStatusColor(order.status);
+                  return (
+                    <div key={order.id} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <div className="font-semibold text-gray-800">{order.customer}</div>
+                          <div className="text-sm text-gray-500">Order #{order.id}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-lg text-gray-800">${order.amount}</div>
+                          <div className={`text-xs px-3 py-1 rounded-full ${statusColors.bg} ${statusColors.text} ${statusColors.border} border`}>
+                            {order.status}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm text-gray-500">Progress</div>
+                        <Progress 
+                          percent={order.progress} 
+                          size="small" 
+                          strokeColor={order.status === 'completed' ? '#10b981' : order.status === 'pending' ? '#f59e0b' : '#3b82f6'}
+                          showInfo={false}
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500">Progress</div>
-                      <Progress 
-                        percent={order.progress} 
-                        size="small" 
-                        strokeColor={order.status === 'completed' ? '#10b981' : order.status === 'pending' ? '#f59e0b' : '#3b82f6'}
-                        showInfo={false}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No recent orders found
+              </div>
+            )}
           </Card>
         </Col>
 
@@ -208,30 +283,36 @@ export const Dashboard: React.FC = () => {
             } 
             className="shadow-lg border-0 rounded-2xl h-full"
           >
-            <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div key={product.name} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl flex items-center justify-center font-bold mr-4">
-                        {index + 1}
+            {topProducts && topProducts.length > 0 ? (
+              <div className="space-y-4">
+                {topProducts.map((product, index) => (
+                  <div key={product.sku} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl flex items-center justify-center font-bold mr-4">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-800">{product.name}</div>
+                          <div className="text-sm text-gray-500">{product.sales} units sold</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-semibold text-gray-800">{product.name}</div>
-                        <div className="text-sm text-gray-500">{product.sales} units sold</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-lg text-gray-800">${product.revenue.toLocaleString()}</div>
-                      <div className="flex items-center text-sm text-yellow-600">
-                        <StarOutlined className="mr-1" />
-                        {product.rating}
+                      <div className="text-right">
+                        <div className="font-bold text-lg text-gray-800">${product.revenue.toLocaleString()}</div>
+                        <div className="flex items-center text-sm text-yellow-600">
+                          <StarOutlined className="mr-1" />
+                          {product.rating}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No product data available
+              </div>
+            )}
           </Card>
         </Col>
       </Row>

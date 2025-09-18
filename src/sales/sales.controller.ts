@@ -146,13 +146,51 @@ export class SalesController {
       this.salesService.getOverdueInvoices(),
     ]);
 
+    // Calculate additional stats
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    // Calculate monthly sales (current month)
+    const monthlySales = salesReport.salesByPeriod
+      .filter(period => {
+        const [year, month] = period.period.split('-').map(Number);
+        return year === currentYear && month === currentMonth + 1;
+      })
+      .reduce((sum, period) => sum + period.sales, 0);
+
+    // Calculate weekly sales (last 7 days)
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const weeklySales = salesReport.salesByPeriod
+      .filter(period => {
+        const [year, month] = period.period.split('-').map(Number);
+        const periodDate = new Date(year, month - 1, 1);
+        return periodDate >= weekAgo;
+      })
+      .reduce((sum, period) => sum + period.sales, 0);
+
     return {
-      salesReport,
-      overdueInvoices: overdueInvoices.length,
-      overdueAmount: overdueInvoices.reduce(
-        (sum, invoice) => sum + invoice.remainingAmount,
-        0,
-      ),
+      stats: {
+        totalSales: salesReport.totalSales,
+        totalInvoices: salesReport.totalInvoices,
+        paidInvoices: salesReport.paidInvoices,
+        pendingInvoices: salesReport.pendingInvoices,
+        overdueInvoices: salesReport.overdueInvoices,
+        overdueAmount: overdueInvoices.reduce(
+          (sum, invoice) => sum + invoice.remainingAmount,
+          0,
+        ),
+        averageInvoiceValue: salesReport.averageInvoiceValue,
+        monthlySales,
+        weeklySales,
+      },
+      recentInvoices: overdueInvoices.slice(0, 5), // Last 5 invoices
+      topProducts: salesReport.topProducts,
+      salesTrend: salesReport.salesByPeriod,
+      paymentMethods: [], // TODO: Implement payment method stats
+      overdueInvoices: overdueInvoices,
+      clientPerformance: [], // TODO: Implement client performance stats
     };
   }
 

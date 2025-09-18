@@ -114,7 +114,7 @@ export class SalesService {
   async findInvoiceById(id: string): Promise<IInvoice> {
     const invoice = await this.invoiceRepository.findOne({
       where: { id },
-      relations: ['items', 'payments'],
+      relations: ['items', 'payments', 'client'],
     });
 
     if (!invoice) {
@@ -127,7 +127,7 @@ export class SalesService {
   async findInvoiceByNumber(invoiceNumber: string): Promise<IInvoice> {
     const invoice = await this.invoiceRepository.findOne({
       where: { invoiceNumber },
-      relations: ['items', 'payments'],
+      relations: ['items', 'payments', 'client'],
     });
 
     if (!invoice) {
@@ -140,7 +140,7 @@ export class SalesService {
   async findInvoicesByClient(clientId: string): Promise<IInvoice[]> {
     const invoices = await this.invoiceRepository.find({
       where: { clientId },
-      relations: ['items', 'payments'],
+      relations: ['items', 'payments', 'client'],
       order: { issueDate: 'DESC' },
     });
 
@@ -152,7 +152,7 @@ export class SalesService {
   async findInvoicesByStatus(status: PaymentStatus): Promise<IInvoice[]> {
     const invoices = await this.invoiceRepository.find({
       where: { paymentStatus: status },
-      relations: ['items', 'payments'],
+      relations: ['items', 'payments', 'client'],
       order: { issueDate: 'DESC' },
     });
 
@@ -410,7 +410,7 @@ export class SalesService {
         paymentStatus: PaymentStatus.PENDING,
         dueDate: LessThanOrEqual(new Date()),
       },
-      relations: ['items', 'payments'],
+      relations: ['items', 'payments', 'client'],
       order: { dueDate: 'ASC' },
     });
 
@@ -451,11 +451,11 @@ export class SalesService {
     const periodStats = new Map<string, { sales: number; invoices: number }>();
 
     invoices.forEach((invoice) => {
-      const period = `${invoice.issueDate.getFullYear()}-${(
-        invoice.issueDate.getMonth() + 1
+      const period = invoice.createdAt ? `${invoice.createdAt?.getFullYear()}-${(
+        invoice.createdAt?.getMonth() + 1
       )
         .toString()
-        .padStart(2, '0')}`;
+        .padStart(2, '0')}` : '';
 
       const existing = periodStats.get(period) || { sales: 0, invoices: 0 };
       existing.sales += Number(invoice.totalAmount);
@@ -480,10 +480,10 @@ export class SalesService {
       id: invoice.id,
       invoiceNumber: invoice.invoiceNumber,
       clientId: invoice.clientId,
-      clientName: invoice.client.name,
-      clientEmail: invoice.client.email,
-      clientPhone: invoice.client.phone,
-      clientAddress: invoice.client.tags.join(', '),
+      clientName: invoice.client?.name || 'Unknown Client',
+      clientEmail: invoice.client?.email || '',
+      clientPhone: invoice.client?.phone || '',
+      clientAddress: invoice.client?.tags?.join(', ') || '',
       paymentTerms: 'Net 30',
       items: items.map((item) => ({
         id: item.id,

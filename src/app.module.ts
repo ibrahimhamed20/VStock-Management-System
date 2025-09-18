@@ -68,7 +68,7 @@ import { throttlerRedisProvider } from './common/providers/throttler-redis.provi
     SettingsModule,
     AiModule,
     RolesModule,
-    AiAgentModule,
+    // AiAgentModule,
   ],
   controllers: [AppController],
   providers: [

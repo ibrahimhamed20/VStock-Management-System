@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthStore>()(
           isLoading: false,
           error: null,
         });
-        
+
         // Store tokens in localStorage for API access
         localStorage.setItem('accessToken', auth.accessToken);
         localStorage.setItem('refreshToken', auth.refreshToken);
@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthStore>()(
           refreshToken,
           isAuthenticated: true,
         });
-        
+
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
       },
@@ -53,7 +53,7 @@ export const useAuthStore = create<AuthStore>()(
           isLoading: false,
           error: null,
         });
-        
+
         // Clear localStorage
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -113,7 +113,7 @@ export const useIsAdmin = () => {
 // Permission and role helpers
 export const useUserRoles = () => useAuthStore((state) => state.user?.roles || []);
 export const useUserPermissions = () => useAuthStore((state) => state.user?.permissions || []);
-export const useHasRole = (roleName: string) => {
+export const useHasRole = (roleName: string): boolean => {
   const roles = useUserRoles();
   return roles.includes(roleName);
 };

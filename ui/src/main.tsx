@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './features/core/components/App.tsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './features/core/components/App.tsx';
+import './index.css';
 import '@ant-design/v5-patch-for-react-19';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <App />
-    </React.StrictMode>,
-)
+    </React.StrictMode>
+);

@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { IClient, ITransaction } from '../interfaces/client.interface';
-import { Invoice } from 'src/sales/entities/invoice.entity';
+// import { Invoice } from 'src/sales/entities/invoice.entity';
 
 @Entity('clients')
 export class Client implements IClient {
@@ -38,6 +38,6 @@ export class Client implements IClient {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Invoice, (invoice: Invoice) => invoice.client)
-  invoices: Invoice[];
+  // @OneToMany(() => Invoice, (invoice: Invoice) => invoice.client)
+  // invoices: Invoice[];
 }

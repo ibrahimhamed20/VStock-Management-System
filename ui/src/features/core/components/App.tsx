@@ -5,14 +5,14 @@ import { MainLayout } from '@core/layout';
 import { LoginForm, RegisterForm, PasswordResetForm } from '@auth/components';
 import { UserManagement, RoleManagement, PermissionMatrix, UserProfile } from '@features/users';
 import { Dashboard } from '@features/dashboard';
-import { 
-  ProductsPage, 
-  StockPage, 
-  BatchesPage, 
-  MovementsPage, 
-  ReportsPage 
+import {
+  ProductsPage,
+  StockPage,
+  BatchesPage,
+  MovementsPage,
+  ReportsPage
 } from '@features/inventory/pages';
-import { SalesPage, InvoiceManagementPage } from '@features/sales/pages';
+import { SalesPage, InvoiceManagementPage, PaymentManagementPage, SalesReportsPage } from '@features/sales/pages';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
 import './App.css';
@@ -187,42 +187,42 @@ const AppRoutes: React.FC = () => {
         }
       />
 
-                  {/* Inventory Management Routes */}
-            <Route path="/inventory" element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <ProductsPage />
-                </MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/inventory/stock" element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <StockPage />
-                </MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/inventory/batches" element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <BatchesPage />
-                </MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/inventory/movements" element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <MovementsPage />
-                </MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/inventory/reports" element={
-              <ProtectedRoute>
-                <MainLayout>
-                  <ReportsPage />
-                </MainLayout>
-              </ProtectedRoute>
-            } />
+      {/* Inventory Management Routes */}
+      <Route path="/inventory" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <ProductsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/inventory/stock" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <StockPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/inventory/batches" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <BatchesPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/inventory/movements" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <MovementsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/inventory/reports" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <ReportsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
 
       <Route path="/sales" element={
         <ProtectedRoute>
@@ -236,6 +236,22 @@ const AppRoutes: React.FC = () => {
         <ProtectedRoute>
           <MainLayout>
             <InvoiceManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/sales/payments" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <PaymentManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/sales/reports" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <SalesReportsPage />
           </MainLayout>
         </ProtectedRoute>
       } />

@@ -183,7 +183,7 @@ export class DashboardService {
         amount: inv.totalAmount,
         status: inv.paymentStatus === 'paid' ? 'completed' : 'pending',
         progress: inv.paymentStatus === 'paid' ? 100 : 65,
-        date: inv.createdAt.toISOString()
+        date: new Date(inv.createdAt).toISOString()
       }));
     } catch (error) {
       console.error('Error fetching recent orders:', error);

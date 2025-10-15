@@ -143,6 +143,18 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           label: 'Invoice Management',
           onClick: () => navigate('/sales/invoices'),
         },
+        {
+          key: '/sales/payments',
+          icon: <DollarOutlined />,
+          label: 'Payment Management',
+          onClick: () => navigate('/sales/payments'),
+        },
+        {
+          key: '/sales/reports',
+          icon: <BarChartOutlined />,
+          label: 'Sales Reports',
+          onClick: () => navigate('/sales/reports'),
+        },
       ],
     },
     {
@@ -223,11 +235,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           selectedKeys={[location.pathname]}
           items={menuItems}
           className="border-0"
-          onClick={({ key }) => {
-            if (key.startsWith('/')) {
-              navigate(key);
-            }
-          }}
         />
       </Sider>
 
@@ -284,8 +291,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </Space>
         </Header>
 
-        <Content className="m-6 p-6 bg-gray-50 min-h-screen">
-          <div className="bg-white rounded-lg shadow-sm min-h-full">
+        <Content className="m-6 p-6 bg-gray-50 shadow-sm min-h-screen rounded-lg">
+          <div className="min-h-full">
             {children}
           </div>
         </Content>

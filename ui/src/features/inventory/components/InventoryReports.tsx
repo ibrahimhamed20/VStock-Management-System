@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Card, Typography, Row, Col, Statistic, Table, Tag, Progress, Alert, Spin, Button } from 'antd';
-import { 
-  BarChartOutlined, 
-  DollarOutlined, 
-  ShoppingOutlined, 
+import {
+  BarChartOutlined,
+  DollarOutlined,
+  ShoppingOutlined,
   TagsOutlined,
   RiseOutlined,
   FallOutlined
@@ -34,7 +34,7 @@ export const InventoryReports: React.FC = () => {
       title: 'Classification',
       key: 'classification',
       render: (item: ABCClassification) => (
-        <Tag 
+        <Tag
           color={getClassificationColor(item.classification)}
           className="font-medium text-lg px-4 py-2"
         >
@@ -65,9 +65,9 @@ export const InventoryReports: React.FC = () => {
       key: 'percentage',
       render: (item: ABCClassification) => (
         <div className="flex items-center space-x-2">
-          <Progress 
-            percent={item.percentage} 
-            size="small" 
+          <Progress
+            percent={item.percentage}
+            size="small"
             strokeColor={getClassificationColor(item.classification)}
             className="flex-1"
           />
@@ -79,6 +79,39 @@ export const InventoryReports: React.FC = () => {
 
   return (
     <div className="space-y-6">
+
+      {/* Report Navigation */}
+      <Card className="shadow-2xl border-0 rounded-2xl bg-white/80 backdrop-blur-sm">
+        <div className="flex justify-center space-x-4">
+          <Button
+            type={selectedReport === 'overview' ? 'primary' : 'default'}
+            size="large"
+            icon={<BarChartOutlined />}
+            onClick={() => setSelectedReport('overview')}
+            className="rounded-xl"
+          >
+            Overview
+          </Button>
+          <Button
+            type={selectedReport === 'abc' ? 'primary' : 'default'}
+            size="large"
+            icon={<TagsOutlined />}
+            onClick={() => setSelectedReport('abc')}
+            className="rounded-xl"
+          >
+            ABC Analysis
+          </Button>
+          <Button
+            type={selectedReport === 'alerts' ? 'primary' : 'default'}
+            size="large"
+            icon={<FallOutlined />}
+            onClick={() => setSelectedReport('alerts')}
+            className="rounded-xl"
+          >
+            Stock Alerts
+          </Button>
+        </div>
+      </Card>
 
       {/* Overview Report */}
       {selectedReport === 'overview' && (
@@ -294,39 +327,6 @@ export const InventoryReports: React.FC = () => {
           </Card>
         </div>
       )}
-
-      {/* Report Navigation */}
-      <Card className="shadow-2xl border-0 rounded-2xl bg-white/80 backdrop-blur-sm">
-        <div className="flex justify-center space-x-4">
-          <Button
-            type={selectedReport === 'overview' ? 'primary' : 'default'}
-            size="large"
-            icon={<BarChartOutlined />}
-            onClick={() => setSelectedReport('overview')}
-            className="rounded-xl"
-          >
-            Overview
-          </Button>
-          <Button
-            type={selectedReport === 'abc' ? 'primary' : 'default'}
-            size="large"
-            icon={<TagsOutlined />}
-            onClick={() => setSelectedReport('abc')}
-            className="rounded-xl"
-          >
-            ABC Analysis
-          </Button>
-          <Button
-            type={selectedReport === 'alerts' ? 'primary' : 'default'}
-            size="large"
-            icon={<FallOutlined />}
-            onClick={() => setSelectedReport('alerts')}
-            className="rounded-xl"
-          >
-            Stock Alerts
-          </Button>
-        </div>
-      </Card>
     </div>
   );
 };

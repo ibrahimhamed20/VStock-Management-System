@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Card, Typography, Tag, Space, Input, Select, Button, Row, Col, Tooltip } from 'antd';
+import { Table, Card, Typography, Tag, Input, Select, Button, Row, Col } from 'antd';
 import { 
   SearchOutlined, 
   ReloadOutlined, 
@@ -34,8 +34,23 @@ export const StockMovementsTable: React.FC<StockMovementsTableProps> = ({
     limit: maxItems
   });
 
+  const getMovementType = (quantity: number) => {
+    return quantity > 0 ? 'Stock In' : 'Stock Out';
+  };
+
+  const getMovementIcon = (quantity: number) => {
+    return quantity > 0 ? 
+      <PlusOutlined className="text-green-500" /> : 
+      <MinusOutlined className="text-red-500" />;
+  };
+
+  const getMovementColor = (quantity: number) => {
+    return quantity > 0 ? 'green' : 'red';
+  };
+
   const filteredMovements = movements?.filter(movement => {
-    const matchesType = !filters.type || movement.type === filters.type;
+    const movementType = getMovementType(movement.quantity);
+    const matchesType = !filters.type || movementType === filters.type;
     const matchesSearch = !filters.search || 
       movement.productName.toLowerCase().includes(filters.search.toLowerCase()) ||
       movement.reason.toLowerCase().includes(filters.search.toLowerCase()) ||
@@ -43,16 +58,6 @@ export const StockMovementsTable: React.FC<StockMovementsTableProps> = ({
     
     return matchesType && matchesSearch;
   }) || [];
-
-  const getMovementIcon = (type: string) => {
-    return type === 'IN' ? 
-      <PlusOutlined className="text-green-500" /> : 
-      <MinusOutlined className="text-red-500" />;
-  };
-
-  const getMovementColor = (type: string) => {
-    return type === 'IN' ? 'green' : 'red';
-  };
 
   const movementColumns = [
     {
@@ -75,11 +80,11 @@ export const StockMovementsTable: React.FC<StockMovementsTableProps> = ({
       key: 'type',
       render: (movement: StockMovement) => (
         <Tag 
-          color={getMovementColor(movement.type)}
-          icon={getMovementIcon(movement.type)}
+          color={getMovementColor(movement.quantity)}
+          icon={getMovementIcon(movement.quantity)}
           className="font-medium"
         >
-          {movement.type}
+          {getMovementType(movement.quantity)}
         </Tag>
       ),
     },
@@ -87,8 +92,8 @@ export const StockMovementsTable: React.FC<StockMovementsTableProps> = ({
       title: 'Quantity',
       key: 'quantity',
       render: (movement: StockMovement) => (
-        <div className={`font-medium ${movement.type === 'IN' ? 'text-green-600' : 'text-red-600'}`}>
-          {movement.type === 'IN' ? '+' : '-'}{movement.quantity}
+        <div className={`font-medium ${movement.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {movement.quantity > 0 ? '+' : ''}{movement.quantity}
         </div>
       ),
     },

@@ -6,3 +6,4 @@ export * from './TopProductsChart';
 export * from './SalesTrendChart';
 export * from './InvoiceModal';
 export * from './InvoiceDetailsModal';
+export * from './PaymentModal';

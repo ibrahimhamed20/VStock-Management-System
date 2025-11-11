@@ -33,6 +33,7 @@ import { PurchaseStatus } from '../types';
 import { formatCurrency, formatDate } from '../../common/utils';
 import { PurchaseModal } from '../components/PurchaseModal';
 import { PurchaseDetailsModal } from '../components/PurchaseDetailsModal';
+import { ReceivePurchaseModal } from '../components/ReceivePurchaseModal';
 
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -42,7 +43,9 @@ export const PurchaseManagementPage: React.FC = () => {
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
+  const [isReceiveModalVisible, setIsReceiveModalVisible] = useState(false);
   const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null);
+  const [receivingPurchase, setReceivingPurchase] = useState<Purchase | null>(null);
 
   const { data: purchases, isLoading, error, refetch } = usePurchases(filters);
   const { deletePurchase, cancelPurchase, approvePurchase, orderPurchase } = usePurchaseMutations();
@@ -100,6 +103,11 @@ export const PurchaseManagementPage: React.FC = () => {
     } catch {
       message.error('Failed to mark purchase as ordered');
     }
+  };
+
+  const handleReceivePurchase = (purchase: Purchase) => {
+    setReceivingPurchase(purchase);
+    setIsReceiveModalVisible(true);
   };
 
   const getStatusTag = (status: PurchaseStatus) => {
@@ -218,6 +226,17 @@ export const PurchaseManagementPage: React.FC = () => {
                 icon={<ShoppingOutlined />}
                 onClick={() => handleOrderPurchase(record.id)}
                 className="text-blue-600"
+              />
+            </Tooltip>
+          )}
+
+          {record.purchaseStatus === PurchaseStatus.ORDERED && (
+            <Tooltip title="Receive Goods">
+              <Button
+                type="text"
+                icon={<CheckCircleOutlined />}
+                onClick={() => handleReceivePurchase(record)}
+                className="text-green-600"
               />
             </Tooltip>
           )}
@@ -399,6 +418,16 @@ export const PurchaseManagementPage: React.FC = () => {
           visible={isDetailsModalVisible}
           onCancel={() => setIsDetailsModalVisible(false)}
           purchase={selectedPurchase}
+        />
+
+        <ReceivePurchaseModal
+          visible={isReceiveModalVisible}
+          onCancel={() => setIsReceiveModalVisible(false)}
+          onSuccess={() => {
+            setIsReceiveModalVisible(false);
+            refetch();
+          }}
+          purchase={receivingPurchase}
         />
       </div>
     </div>

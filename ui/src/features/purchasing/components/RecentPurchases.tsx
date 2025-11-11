@@ -139,12 +139,12 @@ export const RecentPurchases: React.FC = () => {
           >
             Edit
           </Button>
-          {record.purchaseStatus === PurchaseStatus.APPROVED && (
+          {record.purchaseStatus === PurchaseStatus.ORDERED && (
             <Button
               type="text"
               icon={<CheckCircleOutlined />}
               size="small"
-              className="text-purple-600 hover:text-purple-800"
+              className="text-green-600 hover:text-green-800"
             >
               Receive
             </Button>

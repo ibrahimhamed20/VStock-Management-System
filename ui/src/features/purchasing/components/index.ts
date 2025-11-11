@@ -8,4 +8,5 @@ export * from './PurchaseModal';
 export * from './PurchaseDetailsModal';
 export * from './SupplierModal';
 export * from './SupplierDetailsModal';
+export * from './ReceivePurchaseModal';
 

@@ -13,6 +13,7 @@ import {
   ReportsPage
 } from '@features/inventory/pages';
 import { SalesPage, InvoiceManagementPage, PaymentManagementPage, SalesReportsPage } from '@features/sales/pages';
+import { PurchasingPage, PurchaseManagementPage, SupplierManagementPage, PurchasingReportsPage } from '@features/purchasing/pages';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
 import './App.css';
@@ -256,13 +257,32 @@ const AppRoutes: React.FC = () => {
         </ProtectedRoute>
       } />
 
+      {/* Purchasing Management Routes */}
       <Route path="/purchasing" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Purchasing Management</h1>
-              <p className="text-gray-600">Purchasing management functionality coming soon...</p>
-            </div>
+            <PurchasingPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/purchasing/orders" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <PurchaseManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/purchasing/suppliers" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <SupplierManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/purchasing/reports" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <PurchasingReportsPage />
           </MainLayout>
         </ProtectedRoute>
       } />

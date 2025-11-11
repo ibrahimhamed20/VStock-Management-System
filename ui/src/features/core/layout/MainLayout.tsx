@@ -158,10 +158,35 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       ],
     },
     {
-      key: '/purchasing',
+      key: 'purchasing',
       icon: <ShoppingCartOutlined />,
       label: t('navigation.purchasing'),
-      onClick: () => navigate('/purchasing'),
+      children: [
+        {
+          key: '/purchasing',
+          icon: <BarChartOutlined />,
+          label: 'Dashboard',
+          onClick: () => navigate('/purchasing'),
+        },
+        {
+          key: '/purchasing/orders',
+          icon: <FileTextOutlined />,
+          label: 'Purchase Orders',
+          onClick: () => navigate('/purchasing/orders'),
+        },
+        {
+          key: '/purchasing/suppliers',
+          icon: <UserOutlined />,
+          label: 'Suppliers',
+          onClick: () => navigate('/purchasing/suppliers'),
+        },
+        {
+          key: '/purchasing/reports',
+          icon: <BarChartOutlined />,
+          label: 'Reports',
+          onClick: () => navigate('/purchasing/reports'),
+        },
+      ],
     },
     {
       key: '/accounting',

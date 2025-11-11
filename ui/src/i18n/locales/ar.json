@@ -19,7 +19,8 @@
     "close": "إغلاق",
     "confirm": "تأكيد",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "language": "اللغة"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -41,6 +42,7 @@
     "usernameExists": "اسم المستخدم موجود بالفعل"
   },
   "navigation": {
+    "home": "الرئيسية",
     "dashboard": "لوحة التحكم",
     "inventory": "المخزون",
     "sales": "المبيعات",
@@ -53,6 +55,7 @@
   },
   "dashboard": {
     "title": "لوحة التحكم",
+    "subtitle": "لوحة التحكم الرئيسية",
     "welcome": "مرحباً بعودتك",
     "totalSales": "إجمالي المبيعات",
     "totalProducts": "إجمالي المنتجات",

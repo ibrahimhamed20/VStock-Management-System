@@ -32,7 +32,7 @@ export class PurchasingService {
     private readonly purchaseItemRepository: Repository<PurchaseItem>,
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
-  ) {}
+  ) { }
 
   // Purchase Management
   async createPurchase(
@@ -580,12 +580,12 @@ export class PurchasingService {
     >();
 
     purchases.forEach((purchase) => {
-      const period = `${purchase.orderDate.getFullYear()}-${(
-        purchase.orderDate.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, '0')}`;
+      // Ensure orderDate is a Date object
+      const orderDate = purchase.orderDate instanceof Date
+        ? purchase.orderDate
+        : new Date(purchase.orderDate);
 
+      const period = `${orderDate.getFullYear()}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}`;
       const existing = periodStats.get(period) || { purchases: 0, amount: 0 };
       existing.purchases += 1;
       existing.amount += Number(purchase.totalAmount);

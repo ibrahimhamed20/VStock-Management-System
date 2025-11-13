@@ -19,6 +19,10 @@ export class JournalEntryLineDto {
 
   @IsNumber()
   amount: number;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
 }
 
 export class CreateJournalEntryDto {

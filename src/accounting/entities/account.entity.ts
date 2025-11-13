@@ -35,7 +35,7 @@ export class Account {
   balance: number;
 
   @ManyToOne(() => Account, (account) => account.children, { nullable: true })
-  parent: Account;
+  parent: Account | null;
 
   @OneToMany(() => Account, (account) => account.parent)
   children: Account[];

@@ -14,6 +14,23 @@ import {
 } from '@features/inventory/pages';
 import { SalesPage, InvoiceManagementPage, PaymentManagementPage, SalesReportsPage } from '@features/sales/pages';
 import { PurchasingPage, PurchaseManagementPage, SupplierManagementPage, PurchasingReportsPage } from '@features/purchasing/pages';
+import { AccountingPage, AccountManagementPage, JournalEntryManagementPage, FinancialReportsPage, AccountReconciliationPage } from '@features/accounting/pages';
+import { ClientsPage } from '@features/clients/pages';
+import {
+  SettingsPage,
+  BasicSettingsPage,
+  CompanySettingsPage,
+  InvoiceSettingsPage,
+  DateTimeSettingsPage,
+  InventorySettingsPage,
+  EmailSettingsPage,
+  PrintSettingsPage,
+  NumberFormatSettingsPage,
+  SecuritySettingsPage,
+  NotificationSettingsPage,
+  BackupSettingsPage,
+  BusinessHoursSettingsPage,
+} from '@features/settings/pages';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
 import './App.css';
@@ -290,10 +307,43 @@ const AppRoutes: React.FC = () => {
       <Route path="/accounting" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Accounting</h1>
-              <p className="text-gray-600">Accounting functionality coming soon...</p>
-            </div>
+            <AccountingPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/accounting/accounts" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <AccountManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/accounting/journal-entries" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <JournalEntryManagementPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/accounting/reports" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <FinancialReportsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/accounting/reconciliation" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <AccountReconciliationPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/clients" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <ClientsPage />
           </MainLayout>
         </ProtectedRoute>
       } />
@@ -323,10 +373,91 @@ const AppRoutes: React.FC = () => {
       <Route path="/settings" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Settings</h1>
-              <p className="text-gray-600">Settings functionality coming soon...</p>
-            </div>
+            <SettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/basic" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <BasicSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/company" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <CompanySettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/invoice" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <InvoiceSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/datetime" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <DateTimeSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/inventory" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <InventorySettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/email" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <EmailSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/print" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <PrintSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/number-format" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <NumberFormatSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/security" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <SecuritySettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/notifications" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <NotificationSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/backup" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <BackupSettingsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings/business-hours" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <BusinessHoursSettingsPage />
           </MainLayout>
         </ProtectedRoute>
       } />

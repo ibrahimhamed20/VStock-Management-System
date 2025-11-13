@@ -298,9 +298,7 @@ export class SalesController {
   @Get('next-invoice-number')
   @Roles(UserRole.ADMIN, UserRole.CASHIER, UserRole.ACCOUNTANT)
   async getNextInvoiceNumber(): Promise<{ invoiceNumber: string }> {
-    // This would need to be implemented in the service
-    const year = new Date().getFullYear();
-    return { invoiceNumber: `INV-${year}-0001` };
+    return await this.salesService.getNextInvoiceNumber();
   }
 
   @Post('invoices/:id/cancel')

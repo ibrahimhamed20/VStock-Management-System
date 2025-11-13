@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThanOrEqual, Like } from 'typeorm';
 import { Invoice } from './entities/invoice.entity';
@@ -16,6 +16,8 @@ import {
   PaymentStatus,
   PaymentMethod,
 } from './interfaces/invoice.interface';
+import { AccountingService } from '../accounting/accounting.service';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class SalesService {
@@ -26,6 +28,9 @@ export class SalesService {
     private readonly invoiceItemRepository: Repository<InvoiceItem>,
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
+    private readonly settingsService: SettingsService,
+    @Inject(forwardRef(() => AccountingService))
+    private readonly accountingService?: AccountingService,
   ) { }
 
   async createInvoice(
@@ -60,6 +65,9 @@ export class SalesService {
     const taxAmount = (subtotal * taxRate) / 100;
     const totalAmount = subtotal + taxAmount - discountAmount;
 
+    // Calculate due date
+    const calculatedDueDate = dueDate ? new Date(dueDate) : await this.calculateDefaultDueDate();
+
     // Create invoice
     const invoice = this.invoiceRepository.create({
       invoiceNumber,
@@ -73,7 +81,7 @@ export class SalesService {
       remainingAmount: totalAmount,
       paymentStatus: PaymentStatus.PENDING,
       issueDate: new Date(),
-      dueDate: dueDate ? new Date(dueDate) : this.calculateDefaultDueDate(),
+      dueDate: calculatedDueDate,
       notes,
       createdBy: userId,
       createdByName: userName,
@@ -315,7 +323,80 @@ export class SalesService {
       paymentStatus: newPaymentStatus,
     });
 
+    // Create journal entry for payment (if accounting service is available)
+    try {
+      await this.createPaymentJournalEntry(savedPayment, invoice);
+    } catch (error) {
+      // Log error but don't fail payment creation
+      console.error('Failed to create journal entry for payment:', error);
+    }
+
     return this.mapPaymentToInterface(savedPayment);
+  }
+
+  private async createPaymentJournalEntry(payment: Payment, invoice: Invoice) {
+    if (!this.accountingService) return; // Accounting service not available
+
+    try {
+      // Find or get default accounts
+      const accounts = await this.accountingService.getAccountsTree();
+      const flattenAccounts = (accs: any[]): any[] => {
+        const result: any[] = [];
+        accs.forEach(acc => {
+          result.push(acc);
+          if (acc.children) {
+            result.push(...flattenAccounts(acc.children));
+          }
+        });
+        return result;
+      };
+
+      const allAccounts = flattenAccounts(accounts);
+      
+      // Find cash account (default: account with code containing 'cash' or type ASSET)
+      let cashAccount = allAccounts.find((a: any) => 
+        a.code.toLowerCase().includes('cash') || 
+        (a.type === 'asset' && a.name.toLowerCase().includes('cash'))
+      );
+      
+      // Find accounts receivable account
+      let arAccount = allAccounts.find((a: any) => 
+        a.code.toLowerCase().includes('receivable') || 
+        a.name.toLowerCase().includes('receivable') ||
+        (a.type === 'asset' && (a.code.toLowerCase().includes('ar') || a.name.toLowerCase().includes('ar')))
+      );
+
+      // If accounts don't exist, skip journal entry creation
+      if (!cashAccount || !arAccount) {
+        console.warn('Cash or Accounts Receivable account not found. Skipping journal entry creation.');
+        return;
+      }
+
+      // Create journal entry: Debit Cash, Credit Accounts Receivable
+      const paymentDate = payment.processedAt.toISOString().split('T')[0];
+      await this.accountingService.createJournalEntry({
+        date: paymentDate,
+        reference: `PAY-${payment.code || payment.id.substring(0, 8)}`,
+        description: `Payment received for Invoice ${invoice.invoiceNumber} - ${payment.method}`,
+        lines: [
+          {
+            accountId: cashAccount.id,
+            type: 'debit',
+            amount: Number(payment.amount),
+            description: `Payment from invoice ${invoice.invoiceNumber}`,
+          },
+          {
+            accountId: arAccount.id,
+            type: 'credit',
+            amount: Number(payment.amount),
+            description: `Payment received for invoice ${invoice.invoiceNumber}`,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('Error creating payment journal entry:', error);
+      // Don't throw - payment was already created
+    }
   }
 
   async getPaymentsByInvoice(invoiceId: string): Promise<IPayment[]> {
@@ -420,8 +501,10 @@ export class SalesService {
   }
 
   private async generateInvoiceNumber(): Promise<string> {
+    const settings = await this.settingsService?.getSettings();
+    const invoicePrefix = settings?.invoicePrefix || 'INV';
     const year = new Date().getFullYear();
-    const prefix = `INV-${year}`;
+    const prefix = `${invoicePrefix}-${year}`;
 
     const lastInvoice = await this.invoiceRepository.findOne({
       where: { invoiceNumber: Like(`${prefix}%`) },
@@ -430,16 +513,24 @@ export class SalesService {
 
     let sequence = 1;
     if (lastInvoice) {
-      const lastSequence = parseInt(lastInvoice.invoiceNumber.split('-')[2]);
+      const parts = lastInvoice.invoiceNumber.split('-');
+      const lastSequence = parts.length > 2 ? parseInt(parts[parts.length - 1]) : 1;
       sequence = lastSequence + 1;
     }
 
     return `${prefix}-${sequence.toString().padStart(4, '0')}`;
   }
 
-  private calculateDefaultDueDate(): Date {
+  async getNextInvoiceNumber(): Promise<{ invoiceNumber: string }> {
+    const invoiceNumber = await this.generateInvoiceNumber();
+    return { invoiceNumber };
+  }
+
+  private async calculateDefaultDueDate(): Promise<Date> {
+    const settings = await this.settingsService?.getSettings();
+    const paymentTerms = settings?.defaultPaymentTerms || 30;
     const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 30); // 30 days from issue date
+    dueDate.setDate(dueDate.getDate() + paymentTerms);
     return dueDate;
   }
 

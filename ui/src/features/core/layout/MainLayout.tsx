@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button, Avatar, Dropdown, Space, Typography } from 'antd';
 import {
-  MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, ShoppingOutlined, DollarOutlined,
+  MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, ShoppingOutlined, DollarOutlined, AccountBookOutlined,
   ShoppingCartOutlined, BookOutlined, BarChartOutlined, RobotOutlined, UserOutlined,
   SettingOutlined, LogoutOutlined, GlobalOutlined, ProfileOutlined, TeamOutlined,
-  InboxOutlined, HistoryOutlined, FileTextOutlined, BarcodeOutlined
+  InboxOutlined, HistoryOutlined, FileTextOutlined, BarcodeOutlined, CheckCircleOutlined,
+  UsergroupAddOutlined,
+  NumberOutlined,
+  BankOutlined,
+  CalendarOutlined,
+  MailOutlined,
+  PrinterOutlined,
+  LockOutlined,
+  BellOutlined,
+  DatabaseOutlined,
+  ClockCircleOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -158,6 +168,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       ],
     },
     {
+      key: '/clients',
+      icon: <UsergroupAddOutlined />,
+      label: 'Clients',
+      onClick: () => navigate('/clients'),
+    },
+    {
       key: 'purchasing',
       icon: <ShoppingCartOutlined />,
       label: t('navigation.purchasing'),
@@ -189,10 +205,120 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       ],
     },
     {
-      key: '/accounting',
+      key: 'accounting',
       icon: <BookOutlined />,
       label: t('navigation.accounting'),
-      onClick: () => navigate('/accounting'),
+      children: [
+        {
+          key: '/accounting',
+          icon: <BarChartOutlined />,
+          label: 'Dashboard',
+          onClick: () => navigate('/accounting'),
+        },
+        {
+          key: '/accounting/accounts',
+          icon: <AccountBookOutlined />,
+          label: 'Chart of Accounts',
+          onClick: () => navigate('/accounting/accounts'),
+        },
+        {
+          key: '/accounting/journal-entries',
+          icon: <FileTextOutlined />,
+          label: 'Journal Entries',
+          onClick: () => navigate('/accounting/journal-entries'),
+        },
+        {
+          key: '/accounting/reports',
+          icon: <BarChartOutlined />,
+          label: 'Financial Reports',
+          onClick: () => navigate('/accounting/reports'),
+        },
+        {
+          key: '/accounting/reconciliation',
+          icon: <CheckCircleOutlined />,
+          label: 'Account Reconciliation',
+          onClick: () => navigate('/accounting/reconciliation'),
+        },
+      ],
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined />,
+      label: 'Settings',
+      children: [
+        {
+          key: '/settings/basic',
+          icon: <SettingOutlined />,
+          label: 'Basic Settings',
+          onClick: () => navigate('/settings/basic'),
+        },
+        {
+          key: '/settings/company',
+          icon: <BankOutlined />,
+          label: 'Company Information',
+          onClick: () => navigate('/settings/company'),
+        },
+        {
+          key: '/settings/invoice',
+          icon: <FileTextOutlined />,
+          label: 'Invoice Settings',
+          onClick: () => navigate('/settings/invoice'),
+        },
+        {
+          key: '/settings/datetime',
+          icon: <CalendarOutlined  />,
+          label: 'Date & Time',
+          onClick: () => navigate('/settings/datetime'),
+        },
+        {
+          key: '/settings/inventory',
+          icon: <ShoppingOutlined />,
+          label: 'Inventory Settings',
+          onClick: () => navigate('/settings/inventory'),
+        },
+        {
+          key: '/settings/email',
+          icon: <MailOutlined />,
+          label: 'Email/SMTP',
+          onClick: () => navigate('/settings/email'),
+        },
+        {
+          key: '/settings/print',
+          icon: <PrinterOutlined />,
+          label: 'Print/Export',
+          onClick: () => navigate('/settings/print'),
+        },
+        {
+          key: '/settings/number-format',
+          icon: <NumberOutlined />,
+          label: 'Number Format',
+          onClick: () => navigate('/settings/number-format'),
+        },
+        {
+          key: '/settings/security',
+          icon: <LockOutlined />,
+          label: 'Security',
+          onClick: () => navigate('/settings/security'),
+        },
+        {
+          key: '/settings/notifications',
+          icon: <BellOutlined />,
+          label: 'Notifications',
+          onClick: () => navigate('/settings/notifications'),
+        },
+        {
+          key: '/settings/backup',
+          icon: <DatabaseOutlined />,
+          label: 'Backup',
+          onClick: () => navigate('/settings/backup'),
+        },
+        {
+          key: '/settings/business-hours',
+          icon: <ClockCircleOutlined />,
+          label: 'Business Hours',
+          onClick: () => navigate('/settings/business-hours'),
+        },
+      ],
     },
     {
       key: '/reports',

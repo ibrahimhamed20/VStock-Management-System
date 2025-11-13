@@ -16,7 +16,9 @@ import {
   PrinterOutlined,
   SaveOutlined,
   ReloadOutlined,
+  ArrowLeftOutlined,
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useSettings, useUpdateSettings } from '../hooks';
 
 const { Title, Text } = Typography;
@@ -26,6 +28,7 @@ const { TextArea } = Input;
 const PAPER_SIZES = ['A4', 'A3', 'Letter', 'Legal'];
 
 export const PrintSettingsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const { data: settings, isLoading } = useSettings();
   const updateSettings = useUpdateSettings();
@@ -67,15 +70,25 @@ export const PrintSettingsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
-      <Card className="shadow-lg border-0 rounded-xl max-w-4xl mx-auto">
-        <Space className="mb-6">
-          <PrinterOutlined className="text-3xl text-blue-600" />
-          <div>
-            <Title level={2} className="mb-0">
-              Print/Export Settings
-            </Title>
-            <Text type="secondary">Configure print templates, paper size, and branding</Text>
-          </div>
+      <Card className="shadow-lg border-0 rounded-xl w-full mx-auto">
+        <Space className="mb-6 w-full" direction="vertical" size="small">
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/settings')}
+            className="p-0"
+          >
+            Back to Settings
+          </Button>
+          <Space>
+            <PrinterOutlined className="text-3xl text-blue-600" />
+            <div>
+              <Title level={2} className="mb-0">
+                Print/Export Settings
+              </Title>
+              <Text type="secondary">Configure print templates, paper size, and branding</Text>
+            </div>
+          </Space>
         </Space>
 
         <Divider />

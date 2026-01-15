@@ -5,7 +5,6 @@ import type {
   UpdateProductData, 
   StockAdjustment,
   CreateBatchData,
-  UpdateBatchData
 } from '../types/inventory.types';
 
 export const useInventoryOperations = () => {

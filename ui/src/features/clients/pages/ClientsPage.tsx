@@ -7,7 +7,6 @@ import {
   Space,
   Tag,
   Popconfirm,
-  message,
   Row,
   Col,
   Select,
@@ -120,7 +119,7 @@ export const ClientsPage: React.FC = () => {
       title: 'Transactions',
       dataIndex: 'transactions',
       key: 'transactions',
-      render: (transactions: any[]) => (
+      render: (transactions: unknown[]) => (
         <Tag color={transactions.length > 0 ? 'green' : 'default'}>
           {transactions.length}
         </Tag>
@@ -129,7 +128,7 @@ export const ClientsPage: React.FC = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (_: any, record: Client) => (
+      render: (_: unknown, record: Client) => (
         <Space>
           <Button
             type="link"

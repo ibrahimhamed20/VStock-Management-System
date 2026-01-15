@@ -1,0 +1,11 @@
+services:
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    ports:
+      - "3200:80"
+    restart: unless-stopped
+

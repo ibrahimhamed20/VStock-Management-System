@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
-  Form,
   Table,
   InputNumber,
-  Button,
   Typography,
   Space,
   message,
@@ -13,9 +11,8 @@ import {
 import {
   CheckCircleOutlined,
 } from '@ant-design/icons';
-import type { Purchase, PurchaseItem } from '../types';
+import type { Purchase } from '../types';
 import { useReceivePurchase } from '../hooks';
-import { formatCurrency } from '../../common/utils';
 
 const { Text } = Typography;
 
@@ -41,7 +38,6 @@ export const ReceivePurchaseModal: React.FC<ReceivePurchaseModalProps> = ({
   onSuccess,
   purchase
 }) => {
-  const [form] = Form.useForm();
   const [receiveItems, setReceiveItems] = useState<ReceiveItemForm[]>([]);
   const receivePurchase = useReceivePurchase();
 
@@ -130,7 +126,7 @@ export const ReceivePurchaseModal: React.FC<ReceivePurchaseModalProps> = ({
       dataIndex: 'receivedQuantity',
       key: 'receivedQuantity',
       align: 'center' as const,
-      render: (received: number, record: ReceiveItemForm) => {
+      render: (_: unknown, record: ReceiveItemForm) => {
         const alreadyReceived = purchase.items.find(i => i.id === record.itemId)?.receivedQuantity || 0;
         return (
           <Text type={alreadyReceived > 0 ? 'success' : 'secondary'}>

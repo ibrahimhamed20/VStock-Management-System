@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Statistic, Spin, Alert } from 'antd';
+import { Card, Row, Col, Statistic, Spin } from 'antd';
 import { 
   DollarOutlined, 
   FileTextOutlined, 

@@ -25,7 +25,6 @@ import {
   EditOutlined, 
   DeleteOutlined,
   CopyOutlined,
-  PrinterOutlined,
   DollarOutlined,
   FileTextOutlined
 } from '@ant-design/icons';
@@ -35,6 +34,8 @@ import { PaymentStatus } from '../types';
 import { formatCurrency, formatDate } from '../../common/utils';
 import { InvoiceModal } from '../components/InvoiceModal';
 import { InvoiceDetailsModal } from '../components/InvoiceDetailsModal';
+import { PrintInvoice } from '../../core/components/PrintInvoice';
+import { useSettings } from '../../settings/hooks';
 
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -45,6 +46,7 @@ export const InvoiceManagementPage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+  const { data: settings } = useSettings();
 
   const { data: invoices, isLoading, error, refetch } = useInvoices(filters);
   const { deleteInvoice, cancelInvoice, markInvoiceOverdue } = useInvoiceMutations();
@@ -247,14 +249,7 @@ export const InvoiceManagementPage: React.FC = () => {
           </Tooltip>
 
           <Tooltip title="Print">
-            <Button
-              type="text"
-              icon={<PrinterOutlined />}
-              onClick={() => {
-                // TODO: Implement print functionality
-                message.info('Print functionality coming soon');
-              }}
-            />
+            <PrintInvoice invoice={record} settings={settings} buttonType="text" showText={false} />
           </Tooltip>
         </Space>
       ),

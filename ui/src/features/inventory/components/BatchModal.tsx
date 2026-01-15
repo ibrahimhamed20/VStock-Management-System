@@ -1,8 +1,6 @@
 import React from 'react';
 import { Modal, Form, Input, InputNumber, Select, Button, Row, Col, Typography, DatePicker } from 'antd';
 import { 
-  FileTextOutlined, 
-  CalendarOutlined, 
   TeamOutlined,
   DollarOutlined,
   BarcodeOutlined
@@ -12,7 +10,7 @@ import { useProducts } from '../hooks/useInventory';
 import type { CreateBatchData, Batch, Product } from '../types/inventory.types';
 import type { FormInstance } from 'antd';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 interface BatchModalProps {

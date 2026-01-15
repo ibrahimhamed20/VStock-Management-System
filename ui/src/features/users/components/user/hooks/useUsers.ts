@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { UserService } from '../services/userService';
-import type { User, UserLoginHistory } from '../types/user.types';
 
 export const useUsers = () => {
   return useQuery({

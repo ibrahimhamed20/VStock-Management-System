@@ -14,8 +14,9 @@ import {
 } from '@features/inventory/pages';
 import { SalesPage, InvoiceManagementPage, PaymentManagementPage, SalesReportsPage } from '@features/sales/pages';
 import { PurchasingPage, PurchaseManagementPage, SupplierManagementPage, PurchasingReportsPage } from '@features/purchasing/pages';
-import { AccountingPage, AccountManagementPage, JournalEntryManagementPage, FinancialReportsPage, AccountReconciliationPage } from '@features/accounting/pages';
+import { AccountingPage, AccountManagementPage, JournalEntryManagementPage, FinancialReportsPage as AccountingFinancialReportsPage, AccountReconciliationPage } from '@features/accounting/pages';
 import { ClientsPage } from '@features/clients/pages';
+import { ReportsPage as GeneralReportsPage, FinancialReportsPage } from '@features/reports/pages';
 import {
   SettingsPage,
   BasicSettingsPage,
@@ -328,7 +329,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/accounting/reports" element={
         <ProtectedRoute>
           <MainLayout>
-            <FinancialReportsPage />
+            <AccountingFinancialReportsPage />
           </MainLayout>
         </ProtectedRoute>
       } />
@@ -351,10 +352,14 @@ const AppRoutes: React.FC = () => {
       <Route path="/reports" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">Reports</h1>
-              <p className="text-gray-600">Reports functionality coming soon...</p>
-            </div>
+            <GeneralReportsPage />
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/reports/financial" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <FinancialReportsPage />
           </MainLayout>
         </ProtectedRoute>
       } />

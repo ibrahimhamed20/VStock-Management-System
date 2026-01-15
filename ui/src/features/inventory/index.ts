@@ -50,7 +50,6 @@ export type {
   UpdateBatchData,
   BatchExpiry,
   StockMovement,
-  InventoryStats,
   StockValueReport,
   StockAlerts,
   ABCClassification,
@@ -59,4 +58,3 @@ export type {
   ProductClassification
 } from './types/inventory.types';
 
-export { ProductClassification } from './types/inventory.types';

@@ -11,6 +11,7 @@ export enum UserRole {
   ADMIN = 'admin',
   CASHIER = 'cashier',
   ACCOUNTANT = 'accountant',
+  MANAGER = "MANAGER",
 }
 
 export interface ILoginResponse {

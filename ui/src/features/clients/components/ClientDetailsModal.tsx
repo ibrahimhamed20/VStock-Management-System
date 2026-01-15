@@ -12,12 +12,10 @@ import {
 } from 'antd';
 import {
   EditOutlined,
-  TagOutlined,
-  DeleteOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import { useClient, useClientTransactions, useAddTags, useRemoveTags } from '../hooks';
-import type { Client, Transaction } from '../types';
+import type { Client } from '../types';
 import { ClientModal } from './ClientModal';
 
 const { Text } = Typography;

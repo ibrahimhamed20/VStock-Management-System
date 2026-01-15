@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button, Space, Row, Col, Statistic, Alert, Tabs } from 'antd';
+import { Card, Typography, Button, Row, Col, Alert, Tabs } from 'antd';
 import { 
   PlusOutlined, 
   InboxOutlined, 
@@ -33,18 +33,6 @@ export const StockManagement: React.FC = () => {
       stockForm.resetFields();
     }
     setStockModalVisible(true);
-  };
-
-  const getStockStatusColor = (product: Product) => {
-    if (product.stock === 0) return 'red';
-    if (product.stock <= product.minStock) return 'orange';
-    return 'green';
-  };
-
-  const getStockStatusText = (product: Product) => {
-    if (product.stock === 0) return 'Out of Stock';
-    if (product.stock <= product.minStock) return 'Low Stock';
-    return 'In Stock';
   };
 
   return (
@@ -243,7 +231,7 @@ export const StockManagement: React.FC = () => {
           setSelectedProduct(null);
           stockForm.resetFields();
         }}
-        product={selectedProduct}
+        product={selectedProduct || undefined}
         form={stockForm}
       />
     </div>

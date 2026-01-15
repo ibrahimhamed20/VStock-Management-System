@@ -711,7 +711,7 @@ export const FinancialReportsPage: React.FC = () => {
                       },
                     ]}
                     dataSource={cashFlow.operatingActivities}
-                    rowKey={(record, index) => `op-${index}`}
+                    rowKey={(_record, index) => `op-${index}`}
                     pagination={false}
                     size="small"
                     summary={() => (
@@ -748,7 +748,7 @@ export const FinancialReportsPage: React.FC = () => {
                       },
                     ]}
                     dataSource={cashFlow.investingActivities}
-                    rowKey={(record, index) => `inv-${index}`}
+                    rowKey={(_record, index) => `inv-${index}`}
                     pagination={false}
                     size="small"
                     summary={() => (
@@ -785,7 +785,7 @@ export const FinancialReportsPage: React.FC = () => {
                       },
                     ]}
                     dataSource={cashFlow.financingActivities}
-                    rowKey={(record, index) => `fin-${index}`}
+                    rowKey={(_record, index) => `fin-${index}`}
                     pagination={false}
                     size="small"
                     summary={() => (

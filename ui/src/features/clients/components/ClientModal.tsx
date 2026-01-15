@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Button, message } from 'antd';
+import { Modal, Form, Input, Button } from 'antd';
 import { useCreateClient, useUpdateClient } from '../hooks';
 import type { Client, CreateClientData, UpdateClientData } from '../types';
 
@@ -44,7 +44,7 @@ export const ClientModal: React.FC<ClientModalProps> = ({ open, onClose, client 
       onClose();
       form.resetFields();
     } catch (error) {
-      if (error?.errorFields) {
+      if ((error as { errorFields?: unknown[] })?.errorFields) {
         return; // Form validation errors
       }
       console.error('Failed to save client:', error);

@@ -13,7 +13,6 @@ import {
   Statistic
 } from 'antd';
 import {
-  PrinterOutlined,
   CopyOutlined,
   DollarOutlined,
   FileTextOutlined,
@@ -24,6 +23,8 @@ import {
 import type { Invoice } from '../types';
 import { PaymentStatus } from '../types';
 import { formatCurrency, formatDate } from '../../common/utils';
+import { PrintInvoice } from '../../core/components/PrintInvoice';
+import { useSettings } from '../../settings/hooks';
 
 const { Title, Text } = Typography;
 
@@ -38,6 +39,8 @@ export const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   onCancel,
   invoice
 }) => {
+  const { data: settings } = useSettings();
+
   if (!invoice) return null;
 
   const getStatusTag = (status: PaymentStatus) => {
@@ -127,18 +130,7 @@ export const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
         <Button key="close" onClick={onCancel}>
           Close
         </Button>,
-        <Button
-          key="print"
-          type="primary"
-          icon={<PrinterOutlined />}
-          onClick={() => {
-            // TODO: Implement print functionality
-            console.log('Print invoice:', invoice.id);
-          }}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          Print Invoice
-        </Button>,
+        <PrintInvoice key="print" invoice={invoice} settings={settings} />,
         <Button
           key="duplicate"
           icon={<CopyOutlined />}

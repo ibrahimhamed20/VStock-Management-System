@@ -17,5 +17,4 @@ export type {
   PermissionMatrixRole,
   PermissionMatrixPermission,
   PermissionMatrixData,
-  PermissionMatrixStats,
 } from './types/permission-matrix.types';

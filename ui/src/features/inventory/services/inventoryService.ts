@@ -6,12 +6,11 @@ import type {
   StockAdjustment,
   Batch,
   CreateBatchData,
-  UpdateBatchData,
   BatchExpiry,
   StockMovement,
   StockValueReport,
   StockAlerts,
-  ABCClassification,
+  ABCClassification,  
   ProductSearchParams
 } from '../types/inventory.types';
 

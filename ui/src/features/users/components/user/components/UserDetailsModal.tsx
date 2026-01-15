@@ -7,7 +7,6 @@ import {
   SafetyCertificateOutlined,
   ClockCircleOutlined,
   GlobalOutlined,
-  MobileOutlined
 } from '@ant-design/icons';
 import { useUserLoginHistory } from '../hooks/useUsers';
 import type { User } from '../types/user.types';

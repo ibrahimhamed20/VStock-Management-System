@@ -1,15 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { InventoryService } from '../services/inventoryService';
-import type { 
-  Product, 
-  Batch, 
-  BatchExpiry, 
-  StockMovement, 
-  StockValueReport, 
-  StockAlerts, 
-  ABCClassification,
-  ProductSearchParams 
-} from '../types/inventory.types';
+import type { ProductSearchParams } from '../types/inventory.types';
 
 // Product hooks
 export const useProducts = () => {

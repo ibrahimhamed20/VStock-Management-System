@@ -24,8 +24,9 @@ import {
 import type { Purchase } from '../types';
 import { PurchaseStatus } from '../types';
 import { formatCurrency, formatDate } from '../../common/utils';
+import type { valueType } from 'antd/es/statistic/utils';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface PurchaseDetailsModalProps {
   visible: boolean;
@@ -157,7 +158,7 @@ export const PurchaseDetailsModal: React.FC<PurchaseDetailsModalProps> = ({
             <Col span={12}>
               <Statistic
                 title="Purchase Status"
-                value={getStatusTag(purchase.purchaseStatus)}
+                value={getStatusTag(purchase.purchaseStatus) as unknown as valueType}
                 valueStyle={{ fontSize: '16px' }}
               />
             </Col>

@@ -7,8 +7,6 @@ import {
   Input, 
   Tag, 
   Typography, 
-  Row, 
-  Col,
   Tooltip,
   Popconfirm,
   message,
@@ -149,7 +147,7 @@ export const SupplierManagementPage: React.FC = () => {
       key: 'isActive',
       width: 100,
       align: 'center' as const,
-      render: (isActive: boolean, record: Supplier) => (
+      render: (isActive: boolean) => (
         <Tag color={isActive ? 'green' : 'red'} icon={isActive ? <CheckCircleOutlined /> : <StopOutlined />}>
           {isActive ? 'Active' : 'Inactive'}
         </Tag>

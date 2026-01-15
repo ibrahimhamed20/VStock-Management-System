@@ -1,6 +1,3 @@
-// Re-export all types from auth.types.ts
-export * from './auth.types';
-
 // Common types
 export interface MenuItem {
   key: string;
@@ -16,6 +13,6 @@ export interface FormField {
   type: 'text' | 'email' | 'password' | 'number' | 'select' | 'textarea';
   required?: boolean;
   placeholder?: string;
-  options?: { label: string; value: any }[];
-  validation?: any;
+  options?: { label: string; value: unknown }[];
+  validation?: unknown;
 }

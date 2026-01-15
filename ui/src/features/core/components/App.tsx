@@ -32,6 +32,7 @@ import {
   BackupSettingsPage,
   BusinessHoursSettingsPage,
 } from '@features/settings/pages';
+import { AiAgentPage } from '@features/ai-agent';
 import { useAuthStore } from '@auth/stores';
 import { LoadingSpinner } from '@common/components';
 import './App.css';
@@ -367,10 +368,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/ai-agent" element={
         <ProtectedRoute>
           <MainLayout>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold mb-4">AI Agent</h1>
-              <p className="text-gray-600">AI Agent functionality coming soon...</p>
-            </div>
+            <AiAgentPage />
           </MainLayout>
         </ProtectedRoute>
       } />

@@ -276,7 +276,7 @@ export class LlmService implements OnModuleInit {
   private async initializeLLM() {
     try {
       const ollamaUrl = this.configService.get('OLLAMA_URL');
-      const ollamaModel = this.configService.get('OLLAMA_CHAT_MODEL'  );
+      const ollamaModel = this.configService.get('OLLAMA_CHAT_MODEL');
       const huggingFaceModel = this.configService.get('HUGGING_FACE_MODEL');
       const huggingFaceApiKey = this.configService.get('HUGGING_FACE_API_KEY');
       const defaultProvider = this.configService.get('LLM_PROVIDER') as 'ollama' | 'huggingface';
@@ -433,7 +433,7 @@ export class LlmService implements OnModuleInit {
         .slice(-MAX_MESSAGES_PER_SESSION + systemMessages.length);
 
       session.messages = [...systemMessages, ...recentMessages];
-    } 
+    }
   }
 
   private cleanupOldSessions(): void {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout, Menu, Button, Avatar, Dropdown, Space, Typography } from 'antd';
 import {
   MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, ShoppingOutlined, DollarOutlined, AccountBookOutlined,
-  ShoppingCartOutlined, BookOutlined, BarChartOutlined, RobotOutlined, UserOutlined,
+  ShoppingCartOutlined, BookOutlined, BarChartOutlined, UserOutlined,
   SettingOutlined, LogoutOutlined, GlobalOutlined, ProfileOutlined, TeamOutlined,
   InboxOutlined, HistoryOutlined, FileTextOutlined, BarcodeOutlined, CheckCircleOutlined,
   UsergroupAddOutlined,
@@ -266,7 +266,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         },
         {
           key: '/settings/datetime',
-          icon: <CalendarOutlined  />,
+          icon: <CalendarOutlined />,
           label: 'Date & Time',
           onClick: () => navigate('/settings/datetime'),
         },
@@ -326,12 +326,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       label: t('navigation.reports'),
       onClick: () => navigate('/reports'),
     },
-    {
-      key: '/ai-agent',
-      icon: <RobotOutlined />,
-      label: t('navigation.aiAgent'),
-      onClick: () => navigate('/ai-agent'),
-    },
+    // AI Agent - Coming Soon
+    // {
+    //   key: '/ai-agent',
+    //   icon: <RobotOutlined />,
+    //   label: t('navigation.aiAgent'),
+    //   onClick: () => navigate('/ai-agent'),
+    // },
     // Admin section
     ...(isAdmin ? [{
       key: 'admin',
@@ -368,9 +369,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <Layout className="min-h-screen">
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         className="bg-white border-r border-gray-200"
         width={280}
@@ -380,7 +381,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {collapsed ? 'SA' : 'Store Admin'}
           </Title>
         </div>
-        
+
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
@@ -422,14 +423,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               trigger={['click']}
             >
               <Space className="cursor-pointer">
-                <Avatar 
-                  icon={<UserOutlined />} 
+                <Avatar
+                  icon={<UserOutlined />}
                   className="bg-primary-600"
                 />
                 <div className="hidden md:block text-left">
                   <div className="font-medium">
-                    {user?.firstName && user?.lastName 
-                      ? `${user.firstName} ${user.lastName}` 
+                    {user?.firstName && user?.lastName
+                      ? `${user.firstName} ${user.lastName}`
                       : user?.username
                     }
                   </div>

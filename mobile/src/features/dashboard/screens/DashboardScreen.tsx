@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -6,18 +6,13 @@ import {
     ScrollView,
     RefreshControl,
     TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, spacing, borderRadius, fontSize, fontWeight, shadows } from '../../core/theme';
 import { useAuthStore } from '../../auth/stores/authStore';
 import apiService from '../../../services/api';
-
-interface DashboardStats {
-    totalProducts: number;
-    lowStockCount: number;
-    todaySales: number;
-    pendingOrders: number;
-}
+import { DashboardStats } from '../../../types';
 
 export const DashboardScreen: React.FC = () => {
     const navigation = useNavigation();
@@ -25,43 +20,43 @@ export const DashboardScreen: React.FC = () => {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
-            // const data = await apiService.getDashboardStats();
-            // setStats(data);
-            // Using mock data for now
+            setError(null);
+            const data = await apiService.getDashboardStats();
+            setStats(data);
+        } catch (err: any) {
+            console.error('Failed to fetch stats:', err);
+            setError(err.message || 'Failed to load dashboard data');
+            // Set fallback data
             setStats({
-                totalProducts: 156,
-                lowStockCount: 12,
-                todaySales: 2450.00,
-                pendingOrders: 5,
+                totalProducts: 0,
+                lowStockCount: 0,
+                todaySales: 0,
+                todayInvoiceCount: 0,
+                pendingOrders: 0,
+                totalClients: 0,
+                totalInventoryValue: 0,
+                recentActivity: [],
             });
-        } catch (error) {
-            console.error('Failed to fetch stats:', error);
         } finally {
             setLoading(false);
             setRefreshing(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchStats();
-    }, []);
+    }, [fetchStats]);
 
-    const onRefresh = () => {
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchStats();
-    };
+    }, [fetchStats]);
 
     const quickActions = [
-        {
-            id: 'scan',
-            title: 'Scan Product',
-            icon: '📷',
-            color: colors.primary,
-            onPress: () => { } // Will implement scanner
-        },
         {
             id: 'sale',
             title: 'New Sale',
@@ -71,9 +66,9 @@ export const DashboardScreen: React.FC = () => {
         },
         {
             id: 'inventory',
-            title: 'Check Stock',
+            title: 'Products',
             icon: '📦',
-            color: colors.warning,
+            color: colors.primary,
             onPress: () => navigation.navigate('Inventory' as never)
         },
         {
@@ -81,9 +76,29 @@ export const DashboardScreen: React.FC = () => {
             title: 'Low Stock',
             icon: '⚠️',
             color: colors.danger,
-            onPress: () => navigation.navigate('Inventory' as never)
+            onPress: () => navigation.navigate('LowStock' as never)
+        },
+        {
+            id: 'clients',
+            title: 'Clients',
+            icon: '👥',
+            color: colors.secondary,
+            onPress: () => navigation.navigate('Clients' as never)
         },
     ];
+
+    const formatCurrency = (amount: number) => {
+        return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={styles.loadingText}>Loading dashboard...</Text>
+            </View>
+        );
+    }
 
     return (
         <ScrollView
@@ -108,31 +123,61 @@ export const DashboardScreen: React.FC = () => {
                 </View>
             </View>
 
+            {/* Error Banner */}
+            {error && (
+                <View style={styles.errorBanner}>
+                    <Text style={styles.errorText}>⚠️ {error}</Text>
+                    <TouchableOpacity onPress={fetchStats}>
+                        <Text style={styles.retryText}>Retry</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
             {/* Stats Cards */}
             <View style={styles.statsGrid}>
-                <View style={[styles.statCard, { backgroundColor: colors.primary }]}>
+                <TouchableOpacity
+                    style={[styles.statCard, { backgroundColor: colors.primary }]}
+                    onPress={() => navigation.navigate('Inventory' as never)}
+                >
                     <Text style={styles.statIcon}>📦</Text>
                     <Text style={styles.statValue}>{stats?.totalProducts || 0}</Text>
                     <Text style={styles.statLabel}>Products</Text>
-                </View>
+                </TouchableOpacity>
 
-                <View style={[styles.statCard, { backgroundColor: colors.danger }]}>
+                <TouchableOpacity
+                    style={[styles.statCard, { backgroundColor: colors.danger }]}
+                    onPress={() => navigation.navigate('LowStock' as never)}
+                >
                     <Text style={styles.statIcon}>⚠️</Text>
                     <Text style={styles.statValue}>{stats?.lowStockCount || 0}</Text>
                     <Text style={styles.statLabel}>Low Stock</Text>
-                </View>
+                </TouchableOpacity>
 
-                <View style={[styles.statCard, { backgroundColor: colors.success }]}>
+                <TouchableOpacity
+                    style={[styles.statCard, { backgroundColor: colors.success }]}
+                    onPress={() => navigation.navigate('InvoiceList' as never)}
+                >
                     <Text style={styles.statIcon}>💵</Text>
-                    <Text style={styles.statValue}>${stats?.todaySales?.toLocaleString() || 0}</Text>
+                    <Text style={styles.statValue}>{formatCurrency(stats?.todaySales || 0)}</Text>
                     <Text style={styles.statLabel}>Today Sales</Text>
-                </View>
+                </TouchableOpacity>
 
                 <View style={[styles.statCard, { backgroundColor: colors.warning }]}>
                     <Text style={styles.statIcon}>📋</Text>
                     <Text style={styles.statValue}>{stats?.pendingOrders || 0}</Text>
                     <Text style={styles.statLabel}>Pending</Text>
                 </View>
+            </View>
+
+            {/* Inventory Value Card */}
+            <View style={styles.valueCard}>
+                <View style={styles.valueCardContent}>
+                    <Text style={styles.valueCardLabel}>Total Inventory Value</Text>
+                    <Text style={styles.valueCardAmount}>
+                        {formatCurrency(stats?.totalInventoryValue || 0)}
+                    </Text>
+                </View>
+                <Text style={styles.valueCardIcon}>📊</Text>
             </View>
 
             {/* Quick Actions */}
@@ -152,12 +197,21 @@ export const DashboardScreen: React.FC = () => {
                 ))}
             </View>
 
-            {/* Recent Activity placeholder */}
+            {/* Recent Activity */}
             <Text style={styles.sectionTitle}>Recent Activity</Text>
             <View style={styles.activityCard}>
-                <Text style={styles.activityPlaceholder}>
-                    Recent transactions and activities will appear here
-                </Text>
+                {stats?.recentActivity && stats.recentActivity.length > 0 ? (
+                    stats.recentActivity.map((activity, index) => (
+                        <View key={activity.id || index} style={styles.activityItem}>
+                            <Text style={styles.activityTitle}>{activity.title}</Text>
+                            <Text style={styles.activityDesc}>{activity.description}</Text>
+                        </View>
+                    ))
+                ) : (
+                    <Text style={styles.activityPlaceholder}>
+                        Recent transactions and activities will appear here
+                    </Text>
+                )}
             </View>
         </ScrollView>
     );
@@ -170,6 +224,17 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: spacing.md,
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
+    },
+    loadingText: {
+        marginTop: spacing.md,
+        fontSize: fontSize.md,
+        color: colors.textSecondary,
     },
     header: {
         flexDirection: 'row',
@@ -199,6 +264,24 @@ const styles = StyleSheet.create({
         fontWeight: fontWeight.bold,
         color: colors.textInverse,
     },
+    errorBanner: {
+        backgroundColor: '#fef2f2',
+        borderRadius: borderRadius.md,
+        padding: spacing.md,
+        marginBottom: spacing.md,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    errorText: {
+        color: colors.danger,
+        fontSize: fontSize.sm,
+        flex: 1,
+    },
+    retryText: {
+        color: colors.primary,
+        fontWeight: fontWeight.semibold,
+    },
     statsGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -225,6 +308,32 @@ const styles = StyleSheet.create({
         fontSize: fontSize.sm,
         color: colors.textInverse,
         opacity: 0.9,
+    },
+    valueCard: {
+        backgroundColor: colors.surface,
+        borderRadius: borderRadius.lg,
+        padding: spacing.lg,
+        marginBottom: spacing.lg,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        ...shadows.sm,
+    },
+    valueCardContent: {
+        flex: 1,
+    },
+    valueCardLabel: {
+        fontSize: fontSize.sm,
+        color: colors.textSecondary,
+        marginBottom: spacing.xs,
+    },
+    valueCardAmount: {
+        fontSize: fontSize.xxl,
+        fontWeight: fontWeight.bold,
+        color: colors.text,
+    },
+    valueCardIcon: {
+        fontSize: 48,
     },
     sectionTitle: {
         fontSize: fontSize.lg,
@@ -267,7 +376,22 @@ const styles = StyleSheet.create({
         backgroundColor: colors.surface,
         padding: spacing.lg,
         borderRadius: borderRadius.lg,
+        marginBottom: spacing.lg,
         ...shadows.sm,
+    },
+    activityItem: {
+        paddingVertical: spacing.sm,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.divider,
+    },
+    activityTitle: {
+        fontSize: fontSize.md,
+        fontWeight: fontWeight.medium,
+        color: colors.text,
+    },
+    activityDesc: {
+        fontSize: fontSize.sm,
+        color: colors.textSecondary,
     },
     activityPlaceholder: {
         color: colors.textSecondary,

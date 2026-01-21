@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -8,58 +8,78 @@ import {
     TouchableOpacity,
     RefreshControl,
     ActivityIndicator,
+    Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { colors, spacing, borderRadius, fontSize, fontWeight, shadows } from '../../core/theme';
 import apiService from '../../../services/api';
+import { Product } from '../../../types';
 
-interface Product {
-    id: string;
-    name: string;
-    sku: string;
-    barcode?: string;
-    quantity: number;
-    minQuantity: number;
-    price: number;
-    category?: string;
-}
+type FilterType = 'all' | 'low' | 'out';
 
 export const InventoryScreen: React.FC = () => {
+    const navigation = useNavigation<any>();
     const [products, setProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+    const [error, setError] = useState<string | null>(null);
 
-    // Mock data for now
-    const mockProducts: Product[] = [
-        { id: '1', name: 'iPhone 15 Pro Case', sku: 'ACC-001', quantity: 45, minQuantity: 10, price: 29.99, category: 'Accessories' },
-        { id: '2', name: 'USB-C Cable 2m', sku: 'CAB-002', quantity: 8, minQuantity: 20, price: 14.99, category: 'Cables' },
-        { id: '3', name: 'Wireless Mouse', sku: 'PER-003', quantity: 23, minQuantity: 15, price: 34.99, category: 'Peripherals' },
-        { id: '4', name: 'Laptop Stand', sku: 'ACC-004', quantity: 3, minQuantity: 5, price: 49.99, category: 'Accessories' },
-        { id: '5', name: 'Mechanical Keyboard', sku: 'PER-005', quantity: 0, minQuantity: 10, price: 89.99, category: 'Peripherals' },
-        { id: '6', name: 'Monitor Arm', sku: 'ACC-006', quantity: 12, minQuantity: 8, price: 79.99, category: 'Accessories' },
-        { id: '7', name: 'Webcam HD', sku: 'PER-007', quantity: 5, minQuantity: 10, price: 59.99, category: 'Peripherals' },
-    ];
-
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
-            // const data = await apiService.getProducts({ search: searchQuery });
-            // setProducts(data.items);
-            setProducts(mockProducts);
-        } catch (error) {
-            console.error('Failed to fetch products:', error);
+            setError(null);
+            const data = await apiService.getProducts();
+            setProducts(data);
+            applyFilters(data, searchQuery, activeFilter);
+        } catch (err: any) {
+            console.error('Failed to fetch products:', err);
+            setError('Failed to load products. Pull to retry.');
         } finally {
             setLoading(false);
             setRefreshing(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchProducts();
-    }, [searchQuery]);
+    }, [fetchProducts]);
 
-    const onRefresh = () => {
+    const applyFilters = (productList: Product[], query: string, filter: FilterType) => {
+        let filtered = productList;
+
+        // Apply search
+        if (query) {
+            const searchTerm = query.toLowerCase();
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(searchTerm) ||
+                p.sku.toLowerCase().includes(searchTerm) ||
+                p.barcode?.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Apply stock filter
+        if (filter === 'low') {
+            filtered = filtered.filter(p => p.stock > 0 && p.stock <= p.minStock);
+        } else if (filter === 'out') {
+            filtered = filtered.filter(p => p.stock === 0);
+        }
+
+        setFilteredProducts(filtered);
+    };
+
+    useEffect(() => {
+        applyFilters(products, searchQuery, activeFilter);
+    }, [searchQuery, activeFilter, products]);
+
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchProducts();
+    }, [fetchProducts]);
+
+    const handleFilterChange = (filter: FilterType) => {
+        setActiveFilter(filter);
     };
 
     const getStockStatus = (quantity: number, minQuantity: number) => {
@@ -68,26 +88,36 @@ export const InventoryScreen: React.FC = () => {
         return { label: 'In Stock', color: colors.inStock, textColor: colors.inStockText };
     };
 
-    const filteredProducts = products.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.sku.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const getCounts = () => {
+        const all = products.length;
+        const low = products.filter(p => p.stock > 0 && p.stock <= p.minStock).length;
+        const out = products.filter(p => p.stock === 0).length;
+        return { all, low, out };
+    };
+
+    const counts = getCounts();
+
+    const navigateToProduct = (product: Product) => {
+        navigation.navigate('ProductDetail' as never, { productId: product.id } as never);
+    };
 
     const renderProduct = ({ item }: { item: Product }) => {
-        const status = getStockStatus(item.quantity, item.minQuantity);
+        const status = getStockStatus(item.stock, item.minStock);
 
         return (
-            <TouchableOpacity style={styles.productCard}>
+            <TouchableOpacity style={styles.productCard} onPress={() => navigateToProduct(item)}>
                 <View style={styles.productMain}>
                     <View style={styles.productInfo}>
                         <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
-                        <Text style={styles.productSku}>{item.sku} {item.category && `• ${item.category}`}</Text>
+                        <Text style={styles.productSku}>
+                            {item.sku} {item.category && `• ${item.category}`}
+                        </Text>
                     </View>
                     <View style={styles.productMeta}>
-                        <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
+                        <Text style={styles.productPrice}>${item.unitCost?.toFixed(2) || 0}</Text>
                         <View style={[styles.stockBadge, { backgroundColor: status.color }]}>
                             <Text style={[styles.stockText, { color: status.textColor }]}>
-                                {item.quantity} units
+                                {item.stock} units
                             </Text>
                         </View>
                     </View>
@@ -100,6 +130,7 @@ export const InventoryScreen: React.FC = () => {
         return (
             <View style={styles.centered}>
                 <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={styles.loadingText}>Loading products...</Text>
             </View>
         );
     }
@@ -110,28 +141,53 @@ export const InventoryScreen: React.FC = () => {
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
-                    placeholder="Search products..."
+                    placeholder="Search by name, SKU, or barcode..."
                     placeholderTextColor={colors.textLight}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                 />
-                <TouchableOpacity style={styles.scanButton}>
+                <TouchableOpacity
+                    style={styles.scanButton}
+                    onPress={() => navigation.navigate('Scanner' as never)}
+                >
                     <Text style={styles.scanEmoji}>📷</Text>
                 </TouchableOpacity>
             </View>
 
             {/* Quick Filters */}
             <View style={styles.filters}>
-                <TouchableOpacity style={[styles.filterChip, styles.filterChipActive]}>
-                    <Text style={styles.filterTextActive}>All ({products.length})</Text>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeFilter === 'all' && styles.filterChipActive]}
+                    onPress={() => handleFilterChange('all')}
+                >
+                    <Text style={activeFilter === 'all' ? styles.filterTextActive : styles.filterText}>
+                        All ({counts.all})
+                    </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.filterChip}>
-                    <Text style={styles.filterText}>Low Stock ({products.filter(p => p.quantity <= p.minQuantity && p.quantity > 0).length})</Text>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeFilter === 'low' && styles.filterChipActive]}
+                    onPress={() => handleFilterChange('low')}
+                >
+                    <Text style={activeFilter === 'low' ? styles.filterTextActive : styles.filterText}>
+                        Low Stock ({counts.low})
+                    </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.filterChip}>
-                    <Text style={styles.filterText}>Out ({products.filter(p => p.quantity === 0).length})</Text>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeFilter === 'out' && styles.filterChipActive]}
+                    onPress={() => handleFilterChange('out')}
+                >
+                    <Text style={activeFilter === 'out' ? styles.filterTextActive : styles.filterText}>
+                        Out ({counts.out})
+                    </Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Error Banner */}
+            {error && (
+                <View style={styles.errorBanner}>
+                    <Text style={styles.errorText}>{error}</Text>
+                </View>
+            )}
 
             {/* Product List */}
             <FlatList
@@ -145,7 +201,12 @@ export const InventoryScreen: React.FC = () => {
                 ListEmptyComponent={
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyIcon}>📦</Text>
-                        <Text style={styles.emptyText}>No products found</Text>
+                        <Text style={styles.emptyText}>
+                            {searchQuery ? 'No products found' : 'No products available'}
+                        </Text>
+                        <Text style={styles.emptySubtext}>
+                            {searchQuery ? 'Try a different search term' : 'Add products from the web dashboard'}
+                        </Text>
                     </View>
                 }
             />
@@ -162,6 +223,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: spacing.md,
+        fontSize: fontSize.md,
+        color: colors.textSecondary,
     },
     searchContainer: {
         flexDirection: 'row',
@@ -214,6 +280,17 @@ const styles = StyleSheet.create({
         fontSize: fontSize.sm,
         color: colors.textInverse,
         fontWeight: fontWeight.medium,
+    },
+    errorBanner: {
+        backgroundColor: '#fef2f2',
+        margin: spacing.md,
+        marginTop: 0,
+        padding: spacing.md,
+        borderRadius: borderRadius.md,
+    },
+    errorText: {
+        color: colors.danger,
+        textAlign: 'center',
     },
     list: {
         padding: spacing.md,
@@ -273,7 +350,13 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontSize: fontSize.md,
+        fontWeight: fontWeight.medium,
+        color: colors.text,
+    },
+    emptySubtext: {
+        fontSize: fontSize.sm,
         color: colors.textSecondary,
+        marginTop: spacing.xs,
     },
 });
 

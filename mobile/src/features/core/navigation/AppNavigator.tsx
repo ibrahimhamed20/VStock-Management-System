@@ -6,14 +6,28 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { useAuthStore } from '../../auth/stores/authStore';
 import { LoginScreen } from '../../auth/screens/LoginScreen';
+import { ProfileScreen } from '../../auth/screens/ProfileScreen';
 import { DashboardScreen } from '../../dashboard/screens/DashboardScreen';
 import { InventoryScreen } from '../../inventory/screens/InventoryScreen';
+import { ProductDetailScreen } from '../../inventory/screens/ProductDetailScreen';
+import { StockAdjustScreen } from '../../inventory/screens/StockAdjustScreen';
+import { LowStockScreen } from '../../inventory/screens/LowStockScreen';
 import { SalesScreen } from '../../sales/screens/SalesScreen';
-import { ProfileScreen } from '../../auth/screens/ProfileScreen';
+import { InvoiceListScreen } from '../../sales/screens/InvoiceListScreen';
+import { InvoiceDetailScreen } from '../../sales/screens/InvoiceDetailScreen';
+import { ClientsListScreen } from '../../clients/screens/ClientsListScreen';
+import { ClientDetailScreen } from '../../clients/screens/ClientDetailScreen';
+import { AddClientScreen } from '../../clients/screens/AddClientScreen';
+import { ScannerScreen } from '../../scanner/screens/ScannerScreen';
+import { SuppliersScreen } from '../../purchasing/screens/SuppliersScreen';
+import { PurchaseListScreen } from '../../purchasing/screens/PurchaseListScreen';
+import { PurchaseDetailScreen } from '../../purchasing/screens/PurchaseDetailScreen';
 import { colors, fontSize, fontWeight } from '../theme';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+import { RootStackParamList, MainTabParamList } from './types';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Tab icon component
 const TabIcon = ({ icon, focused }: { icon: string; focused: boolean }) => (
@@ -72,6 +86,13 @@ const MainTabs = () => {
                 }}
             />
             <Tab.Screen
+                name="Clients"
+                component={ClientsListScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => <TabIcon icon="👥" focused={focused} />,
+                }}
+            />
+            <Tab.Screen
                 name="Profile"
                 component={ProfileScreen}
                 options={{
@@ -91,18 +112,95 @@ export const AppNavigator: React.FC = () => {
         return (
             <View style={styles.loadingContainer}>
                 <Text style={styles.loadingEmoji}>📦</Text>
-                <Text style={styles.loadingText}>Loading...</Text>
+                <Text style={styles.loadingText}>VStock</Text>
+                <Text style={styles.loadingSubtext}>Loading...</Text>
             </View>
         );
     }
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator
+                screenOptions={{
+                    headerStyle: {
+                        backgroundColor: colors.surface,
+                    },
+                    headerTitleStyle: {
+                        fontWeight: fontWeight.semibold,
+                        color: colors.text,
+                    },
+                    headerTintColor: colors.primary,
+                }}
+            >
                 {isAuthenticated ? (
-                    <Stack.Screen name="Main" component={MainTabs} />
+                    <>
+                        <Stack.Screen
+                            name="Main"
+                            component={MainTabs}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="ProductDetail"
+                            component={ProductDetailScreen}
+                            options={{ title: 'Product Details' }}
+                        />
+                        <Stack.Screen
+                            name="StockAdjust"
+                            component={StockAdjustScreen}
+                            options={{ title: 'Adjust Stock' }}
+                        />
+                        <Stack.Screen
+                            name="LowStock"
+                            component={LowStockScreen}
+                            options={{ title: 'Stock Alerts' }}
+                        />
+                        <Stack.Screen
+                            name="InvoiceList"
+                            component={InvoiceListScreen}
+                            options={{ title: 'Invoices' }}
+                        />
+                        <Stack.Screen
+                            name="InvoiceDetail"
+                            component={InvoiceDetailScreen}
+                            options={{ title: 'Invoice Details' }}
+                        />
+                        <Stack.Screen
+                            name="ClientDetail"
+                            component={ClientDetailScreen}
+                            options={{ title: 'Client Details' }}
+                        />
+                        <Stack.Screen
+                            name="AddClient"
+                            component={AddClientScreen}
+                            options={{ title: 'Add Client' }}
+                        />
+                        <Stack.Screen
+                            name="Scanner"
+                            component={ScannerScreen}
+                            options={{ title: 'Scan Product' }}
+                        />
+                        <Stack.Screen
+                            name="Suppliers"
+                            component={SuppliersScreen}
+                            options={{ title: 'Suppliers' }}
+                        />
+                        <Stack.Screen
+                            name="PurchaseList"
+                            component={PurchaseListScreen}
+                            options={{ title: 'Purchase Orders' }}
+                        />
+                        <Stack.Screen
+                            name="PurchaseDetail"
+                            component={PurchaseDetailScreen}
+                            options={{ title: 'Purchase Details' }}
+                        />
+                    </>
                 ) : (
-                    <Stack.Screen name="Login" component={LoginScreen} />
+                    <Stack.Screen
+                        name="Login"
+                        component={LoginScreen}
+                        options={{ headerShown: false }}
+                    />
                 )}
             </Stack.Navigator>
         </NavigationContainer>
@@ -121,8 +219,14 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     loadingText: {
-        fontSize: fontSize.lg,
+        fontSize: fontSize.xxl,
+        fontWeight: fontWeight.bold,
+        color: colors.text,
+    },
+    loadingSubtext: {
+        fontSize: fontSize.md,
         color: colors.textSecondary,
+        marginTop: 8,
     },
     tabIcon: {
         padding: 4,

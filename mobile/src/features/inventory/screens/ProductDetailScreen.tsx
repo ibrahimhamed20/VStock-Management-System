@@ -134,7 +134,7 @@ export const ProductDetailScreen: React.FC = () => {
                     </View>
                     <View style={styles.stockItem}>
                         <Text style={styles.stockValue}>{product.maxStock || '-'}</Text>
-                        <Text style={styles.stockLabel}>Max Stock</Text>
+                        <Text style={styles.stockLabel}>Max Stock</Text>0
                     </View>
                 </View>
                 <TouchableOpacity style={styles.adjustButton} onPress={handleAdjustStock}>
